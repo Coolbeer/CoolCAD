@@ -45,7 +45,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_cooleda_OBJECTS = main.$(OBJEXT)
+am_cooleda_OBJECTS = main.$(OBJEXT) mainWindow.$(OBJEXT)
 cooleda_OBJECTS = $(am_cooleda_OBJECTS)
 cooleda_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -152,7 +152,11 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-cooleda_SOURCES = main.cpp
+cooleda_SOURCES = \
+    main.cpp \
+    mainWindow.cpp
+
+CLEANFILES = *~
 AM_CXXFLAGS = $(QtCore_CFLAGS) $(QtGui_CFLAGS)
 AM_LDFLAGS = $(QtCore_LIBS) $(QtGui_LIBS)
 all: all-am
@@ -237,6 +241,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainWindow.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -358,6 +363,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)

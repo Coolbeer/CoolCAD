@@ -1,10 +1,11 @@
 #include <QtGui/QApplication>
-#include <QtGui/QMainWindow>
+
+#include "mainWindow.h"
 
 int main(int argc, char **argv)
 {
     QApplication *qAp(new QApplication(argc,argv));
-    QMainWindow *mainWindow(new QMainWindow);
-    mainWindow->show();
+    t_mainWindow mainWindow;
+    mainWindow.show();
     return qAp->exec();
 }
