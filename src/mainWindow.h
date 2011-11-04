@@ -10,6 +10,7 @@ class t_mainWindow : public QMainWindow
                         t_mainWindow();
     private:
         QGraphicsView   *mainWidget;
+        QGraphicsScene  *mainScene;
 };
 
 #endif
