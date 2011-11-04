@@ -9,7 +9,6 @@ t_mainWindow::t_mainWindow(void)
 	toolsMenu = menuB->addMenu("Tools");
 	toolsMenu->addAction("Part Editor");
 
-
     t_schObject *testObj = new t_schObject;
     mainWidget = new QGraphicsView;
     mainScene = new QGraphicsScene;
