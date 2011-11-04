@@ -4,8 +4,11 @@
 
 t_mainWindow::t_mainWindow(void)
 {
+	QMenu *toolsMenu;
 	QMenuBar *menuB = new QMenuBar;
-	menuB->addAction("test");
+	toolsMenu = menuB->addMenu("Tools");
+	toolsMenu->addAction("Part Editor");
+
 
     t_schObject *testObj = new t_schObject;
     mainWidget = new QGraphicsView;
