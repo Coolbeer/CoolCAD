@@ -27,7 +27,19 @@ void t_mainWindow::openPartEditor(void)
 {
 	pEditor = new t_partEditor2;
 	partEditorWindow = mdiArea->addSubWindow(pEditor, Qt::Window);
-//	partEditorWindow->hide();
-
 	partEditorWindow->showMaximized();
 }
+
+void t_mainWindow::keyPressEvent(QKeyEvent *event)
+{
+	int key = event->key();
+	switch(key)
+	{
+		case Qt::Key_Escape:
+			pEditor->cancel();
+			break;
+		default:
+			break;
+	}
+}
+

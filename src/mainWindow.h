@@ -4,6 +4,7 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QMdiArea>
 #include <QtGui/QMdiSubWindow>
+#include <QtGui/QKeyEvent>
 
 #include "parteditor2.h"
 
@@ -21,6 +22,9 @@ class t_mainWindow : public QMainWindow
 		t_partEditor2	*pEditor;
 		void			createMenu(void);
 		void			testObject(void);
+	protected:
+		void			keyPressEvent(QKeyEvent *event);
+
 };
 
 #endif

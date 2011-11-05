@@ -13,11 +13,13 @@ class t_partEditor2 : public QWidget
 	public:
 							t_partEditor2(void);
 		uint16_t			roundNumber(uint16_t number);
+		void				cancel(void);
 	private:
 		void				drawGrid(void);
 		uint16_t			dotX, dotY;
 		uint16_t			startDotX, startDotY;
 		uint8_t				mode;
+		std::vector<QRect>	partLines;
 	protected:
 		void paintEvent(QPaintEvent *event);
 		void mouseMoveEvent(QMouseEvent *event);

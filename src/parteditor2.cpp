@@ -34,12 +34,19 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	painter.setPen(dotPen);
 	painter.drawLine(500,490,500,510);
 	painter.drawLine(490,500,510,500);
+
+	dotPen.setColor(QColor(200,100,100));
+	dotPen.setWidth(5);
+	dotPen.setStyle(Qt::SolidLine);
+	painter.setPen(dotPen);
+
+	if(!partLines.empty())
+	{
+		for(std::vector<QRect>::iterator iter = partLines.begin(); iter != partLines.end(); ++iter)
+			painter.drawLine(iter->x(), iter->y(), iter->width(), iter->height());
+	}
 	if(mode == LINE)
 	{
-		dotPen.setColor(QColor(200,100,100));
-		dotPen.setWidth(5);
-		dotPen.setStyle(Qt::SolidLine);
-		painter.setPen(dotPen);
 		painter.drawLine(startDotX, startDotY, dotX, dotY);
 	}
 }
@@ -61,11 +68,23 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 	}
 	else if(mode == LINE)
 	{
+		QRect newRect;
+		newRect.setX(startDotX);
+		newRect.setY(startDotY);
+		newRect.setWidth(roundNumber(event->x()));
+		newRect.setHeight(roundNumber(event->y()));
+		partLines.push_back(newRect);
 		startDotX = 0;
 		startDotY = 0;
 		mode = NORMAL;
 	}
 	repaint();
+}
+
+void t_partEditor2::cancel(void)
+{
+	if(mode = LINE)
+		mode = NORMAL;
 }
 
 uint16_t t_partEditor2::roundNumber(uint16_t number)
