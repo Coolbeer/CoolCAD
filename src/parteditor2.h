@@ -2,6 +2,7 @@
 #define PARTEDITOR2_H
 
 #include <QtGui/QWidget>
+#include <cstdint>
 
 class t_partEditor2 : public QWidget
 {
@@ -10,8 +11,11 @@ class t_partEditor2 : public QWidget
 						t_partEditor2(void);
 	private:
 		void			drawGrid(void);
+		uint16_t		dotX;
+		uint16_t		dotY;
 	protected:
 		void paintEvent(QPaintEvent *event);
+		void mouseMoveEvent(QMouseEvent *event);
 };
 
 #endif

@@ -1,6 +1,8 @@
 #include "parteditor2.moc"
 #include <QtGui/QPainter>
+#include <QtGui/QMouseEvent>
 #include <cstdint>
+#include <iostream>
 
 t_partEditor2::t_partEditor2(void)
 {
@@ -30,4 +32,12 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	painter.setPen(dotPen);
 	painter.drawLine(500,490,500,510);
 	painter.drawLine(490,500,510,500);
+	painter.drawLine(0,0, dotX,dotY);
+}
+
+void t_partEditor2::mouseMoveEvent(QMouseEvent *event)
+{
+	dotX = event->x();
+	dotY = event->y();
+	repaint();
 }
