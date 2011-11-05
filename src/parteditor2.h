@@ -4,8 +4,8 @@
 #include <QtGui/QWidget>
 #include <cstdint>
 
-#define NORMAL 0
-#define LINE   1
+#define MOVE 0
+#define LINE 1
 
 class t_partEditor2 : public QWidget
 {
@@ -14,6 +14,7 @@ class t_partEditor2 : public QWidget
 							t_partEditor2(void);
 		uint16_t			roundNumber(uint16_t number);
 		void				cancel(void);
+		void				setToolBarButton(uint8_t number);
 	private:
 		void				drawGrid(void);
 		uint16_t			dotX, dotY;
@@ -21,6 +22,7 @@ class t_partEditor2 : public QWidget
 		uint8_t				mode;
 		std::vector<QRect>	partLines;
 		double				scale;
+		uint8_t				toolBarButton;
 	protected:
 		void				paintEvent(QPaintEvent *event);
 		void				mouseMoveEvent(QMouseEvent *event);

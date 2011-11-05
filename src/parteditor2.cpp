@@ -7,8 +7,10 @@
 t_partEditor2::t_partEditor2(void)
 {
 	setMouseTracking(true);
-	mode = NORMAL;
+	mode = MOVE;
 	scale = 0.5;
+	startDotX = 0;
+	startDotY = 0;
 }
 
 void t_partEditor2::drawGrid(void)
@@ -48,7 +50,7 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 		for(std::vector<QRect>::iterator iter = partLines.begin(); iter != partLines.end(); ++iter)
 			painter.drawLine(iter->x(), iter->y(), iter->width(), iter->height());
 	}
-	if(mode == LINE)
+	if(mode == LINE && startDotX != 0 && startDotY != 0)
 	{
 		painter.drawLine(startDotX, startDotY, dotX, dotY);
 	}
@@ -66,23 +68,27 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 {
 	if(event->button() == Qt::LeftButton)
 	{
-		if(mode == NORMAL)
+		if(mode == MOVE)
 		{
-			startDotX = roundNumber(event->x())/scale;
-			startDotY = roundNumber(event->y())/scale;
-			mode = LINE;
 		}
 		else if(mode == LINE)
 		{
-			QRect newRect;
-			newRect.setX(startDotX);
-			newRect.setY(startDotY);
-			newRect.setWidth(roundNumber(event->x())/scale);
-			newRect.setHeight(roundNumber(event->y())/scale);
-			partLines.push_back(newRect);
-			startDotX = 0;
-			startDotY = 0;
-			mode = NORMAL;
+			if(startDotX == 0 && startDotY == 0)
+			{
+				startDotX = roundNumber(event->x())/scale;
+				startDotY = roundNumber(event->y())/scale;
+			}
+			else
+			{
+				QRect newRect;
+				newRect.setX(startDotX);
+				newRect.setY(startDotY);
+				newRect.setWidth(roundNumber(event->x())/scale);
+				newRect.setHeight(roundNumber(event->y())/scale);
+				partLines.push_back(newRect);
+				startDotX = 0;
+				startDotY = 0;
+			}
 		}
 	}
 	event->accept();
@@ -92,7 +98,10 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 void t_partEditor2::cancel(void)
 {
 	if(mode == LINE)
-		mode = NORMAL;
+	{
+		startDotX = 0;
+		startDotY = 0;
+	}
 }
 
 void t_partEditor2::wheelEvent(QWheelEvent *event)
@@ -110,6 +119,11 @@ void t_partEditor2::wheelEvent(QWheelEvent *event)
 	std::cout << scale << "\n";
 	event->accept();
 	repaint();
+}
+
+void t_partEditor2::setToolBarButton(uint8_t number)
+{
+	mode = number;
 }
 
 uint16_t t_partEditor2::roundNumber(uint16_t number)

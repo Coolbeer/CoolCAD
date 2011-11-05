@@ -9,9 +9,11 @@ t_mainWindow::t_mainWindow(void)
 {
 	mdiArea = new QMdiArea;
 	setCentralWidget(mdiArea);
+	pEditor = new t_partEditor2;
 
 	createMenu();
 	createToolBar();
+
 	QResource::registerResource("resource.rcc");
 //	mdiArea->setViewMode(QMdiArea::TabbedView); //Enable this when we have more than one window
 }
@@ -41,14 +43,26 @@ void t_mainWindow::createToolBar(void)
 	actionGroup->addAction(lineAction);
 	toolBar->addActions(actionGroup->actions());
 	moveAction->setChecked(true);
+	pEditor->setToolBarButton(0);
 	addToolBar(Qt::LeftToolBarArea, toolBar);
+
+	connect(actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(updateEditor(QAction*)));
 }
 
 void t_mainWindow::openPartEditor(void)
 {
-	pEditor = new t_partEditor2;
 	partEditorWindow = mdiArea->addSubWindow(pEditor, Qt::Window);
 	partEditorWindow->showMaximized();
+}
+
+void t_mainWindow::updateEditor(QAction *act)
+{
+	if(act->text() == "Move")
+		pEditor->setToolBarButton(MOVE);
+	else if(act->text()== "Draw Line")
+		pEditor->setToolBarButton(LINE);
+
+	std::cout << act->text().toStdString() << "\n";
 }
 
 void t_mainWindow::keyPressEvent(QKeyEvent *event)
