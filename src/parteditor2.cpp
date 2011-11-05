@@ -8,6 +8,7 @@ t_partEditor2::t_partEditor2(void)
 {
 	setMouseTracking(true);
 	mode = NORMAL;
+	scale = 0.5;
 }
 
 void t_partEditor2::drawGrid(void)
@@ -19,6 +20,7 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 {
 	QPainter painter(this);
 	QPen dotPen;
+	painter.scale(scale, scale);
 	painter.setBackgroundMode(Qt::OpaqueMode);
 	painter.setBackground(QBrush(QColor(255,255,255)));
 	dotPen.setStyle(Qt::DashLine);
@@ -53,31 +55,36 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 
 void t_partEditor2::mouseMoveEvent(QMouseEvent *event)
 {
-	dotX = roundNumber(event->x());
-	dotY = roundNumber(event->y());
+	dotX = roundNumber(event->x())/scale;
+	dotY = roundNumber(event->y())/scale;
 	repaint();
+	event->accept();
 }
 
 void t_partEditor2::mousePressEvent(QMouseEvent *event)
 {
-	if(mode == NORMAL)
+	if(event->button() == Qt::LeftButton)
 	{
-		startDotX = roundNumber(event->x());
-		startDotY = roundNumber(event->y());
-		mode = LINE;
+		if(mode == NORMAL)
+		{
+			startDotX = roundNumber(event->x())/scale;
+			startDotY = roundNumber(event->y())/scale;
+			mode = LINE;
+		}
+		else if(mode == LINE)
+		{
+			QRect newRect;
+			newRect.setX(startDotX);
+			newRect.setY(startDotY);
+			newRect.setWidth(roundNumber(event->x())/scale);
+			newRect.setHeight(roundNumber(event->y())/scale);
+			partLines.push_back(newRect);
+			startDotX = 0;
+			startDotY = 0;
+			mode = NORMAL;
+		}
 	}
-	else if(mode == LINE)
-	{
-		QRect newRect;
-		newRect.setX(startDotX);
-		newRect.setY(startDotY);
-		newRect.setWidth(roundNumber(event->x()));
-		newRect.setHeight(roundNumber(event->y()));
-		partLines.push_back(newRect);
-		startDotX = 0;
-		startDotY = 0;
-		mode = NORMAL;
-	}
+	event->accept();
 	repaint();
 }
 
@@ -87,10 +94,28 @@ void t_partEditor2::cancel(void)
 		mode = NORMAL;
 }
 
+void t_partEditor2::wheelEvent(QWheelEvent *event)
+{
+	int numDegrees = event->delta() / 8;
+	int numSteps = numDegrees / 15;
+	std::cout << numSteps << "\n";
+	if (event->orientation() == Qt::Vertical)
+	{
+		if(event->delta() > 0)
+			scale += 0.01;
+		else if(event->delta() < 0)
+			scale -= 0.01;
+	}
+	std::cout << scale << "\n";
+	event->accept();
+	repaint();
+}
+
 uint16_t t_partEditor2::roundNumber(uint16_t number)
 {
-	uint16_t returnValue = number / 50;
-	if(number % 50 >= 25)
+	uint16_t tempVal = 50*scale;
+	uint16_t returnValue = number / tempVal;
+	if(number -returnValue*tempVal >= tempVal/2)
 		++returnValue;
-	return returnValue *50;
+	return returnValue *tempVal;
 }

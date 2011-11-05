@@ -20,10 +20,12 @@ class t_partEditor2 : public QWidget
 		uint16_t			startDotX, startDotY;
 		uint8_t				mode;
 		std::vector<QRect>	partLines;
+		double				scale;
 	protected:
-		void paintEvent(QPaintEvent *event);
-		void mouseMoveEvent(QMouseEvent *event);
-		void mousePressEvent(QMouseEvent *event);
+		void				paintEvent(QPaintEvent *event);
+		void				mouseMoveEvent(QMouseEvent *event);
+		void				mousePressEvent(QMouseEvent *event);
+		void				wheelEvent (QWheelEvent *event); 
 };
 
 #endif
