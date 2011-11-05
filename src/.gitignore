@@ -1,0 +1,4 @@
+.deps
+cooleda
+*.o
+*.moc
