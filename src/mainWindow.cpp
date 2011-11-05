@@ -1,5 +1,4 @@
 #include "mainWindow.moc"
-//#include "resource.cpp"
 
 #include <QtGui/QMenuBar>
 #include <QtCore/QResource>
@@ -30,12 +29,18 @@ void t_mainWindow::createMenu(void)
 
 void t_mainWindow::createToolBar(void)
 {
+	actionGroup = new QActionGroup(this);
 	toolBar = new QToolBar;
 	toolBar->setMovable(false);
 
-	QAction *moveAction = new QAction(QIcon(":/images/arrows.png"), "none", this);
-
-	toolBar->addAction(moveAction);
+	moveAction = new QAction(QIcon(":/images/arrows.png"), "Move", this);
+	lineAction = new QAction(QIcon(":/images/line.png"), "Draw Line", this);
+	moveAction->setCheckable(true);
+	lineAction->setCheckable(true);
+	actionGroup->addAction(moveAction);
+	actionGroup->addAction(lineAction);
+	toolBar->addActions(actionGroup->actions());
+	moveAction->setChecked(true);
 	addToolBar(Qt::LeftToolBarArea, toolBar);
 }
 

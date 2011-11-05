@@ -6,6 +6,7 @@
 #include <QtGui/QMdiSubWindow>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QToolBar>
+#include <QtGui/QActionGroup>
 
 #include "parteditor2.h"
 
@@ -22,6 +23,8 @@ class t_mainWindow : public QMainWindow
 		QMdiSubWindow	*partEditorWindow;
 		t_partEditor2	*pEditor;
 		QToolBar		*toolBar;
+		QAction			*moveAction, *lineAction;
+		QActionGroup	*actionGroup;
 		void			createMenu(void);
 		void			testObject(void);
 		void			createToolBar(void);
