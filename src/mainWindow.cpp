@@ -1,6 +1,9 @@
 #include "mainWindow.moc"
+//#include "resource.cpp"
 
 #include <QtGui/QMenuBar>
+#include <QtCore/QResource>
+
 #include <iostream>
 
 t_mainWindow::t_mainWindow(void)
@@ -9,6 +12,8 @@ t_mainWindow::t_mainWindow(void)
 	setCentralWidget(mdiArea);
 
 	createMenu();
+	createToolBar();
+	QResource::registerResource("resource.rcc");
 //	mdiArea->setViewMode(QMdiArea::TabbedView); //Enable this when we have more than one window
 }
 
@@ -21,6 +26,17 @@ void t_mainWindow::createMenu(void)
 	setMenuBar(menuB);
 
 	connect(pEditorAction, SIGNAL(triggered()), this, SLOT(openPartEditor()));
+}
+
+void t_mainWindow::createToolBar(void)
+{
+	toolBar = new QToolBar;
+	toolBar->setMovable(false);
+
+	QAction *moveAction = new QAction(QIcon(":/images/arrows.png"), "none", this);
+
+	toolBar->addAction(moveAction);
+	addToolBar(Qt::LeftToolBarArea, toolBar);
 }
 
 void t_mainWindow::openPartEditor(void)
