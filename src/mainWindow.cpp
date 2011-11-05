@@ -43,7 +43,7 @@ void t_mainWindow::createToolBar(void)
 	actionGroup->addAction(lineAction);
 	toolBar->addActions(actionGroup->actions());
 	moveAction->setChecked(true);
-	pEditor->setToolBarButton(0);
+	pEditor->setToolBarButton(MOVE);
 	addToolBar(Qt::LeftToolBarArea, toolBar);
 
 	connect(actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(updateEditor(QAction*)));
@@ -61,8 +61,6 @@ void t_mainWindow::updateEditor(QAction *act)
 		pEditor->setToolBarButton(MOVE);
 	else if(act->text()== "Draw Line")
 		pEditor->setToolBarButton(LINE);
-
-	std::cout << act->text().toStdString() << "\n";
 }
 
 void t_mainWindow::keyPressEvent(QKeyEvent *event)
