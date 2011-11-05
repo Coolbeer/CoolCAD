@@ -6,6 +6,8 @@
 
 t_partEditor2::t_partEditor2(void)
 {
+	setMouseTracking(true);
+	mode = NORMAL;
 }
 
 void t_partEditor2::drawGrid(void)
@@ -32,12 +34,44 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	painter.setPen(dotPen);
 	painter.drawLine(500,490,500,510);
 	painter.drawLine(490,500,510,500);
-	painter.drawLine(0,0, dotX,dotY);
+	if(mode == LINE)
+	{
+		dotPen.setColor(QColor(200,100,100));
+		dotPen.setWidth(5);
+		dotPen.setStyle(Qt::SolidLine);
+		painter.setPen(dotPen);
+		painter.drawLine(startDotX, startDotY, dotX, dotY);
+	}
 }
 
 void t_partEditor2::mouseMoveEvent(QMouseEvent *event)
 {
-	dotX = event->x();
-	dotY = event->y();
+	dotX = roundNumber(event->x());
+	dotY = roundNumber(event->y());
 	repaint();
+}
+
+void t_partEditor2::mousePressEvent(QMouseEvent *event)
+{
+	if(mode == NORMAL)
+	{
+		startDotX = roundNumber(event->x());
+		startDotY = roundNumber(event->y());
+		mode = LINE;
+	}
+	else if(mode == LINE)
+	{
+		startDotX = 0;
+		startDotY = 0;
+		mode = NORMAL;
+	}
+	repaint();
+}
+
+uint16_t t_partEditor2::roundNumber(uint16_t number)
+{
+	uint16_t returnValue = number / 50;
+	if(number % 50 >= 25)
+		++returnValue;
+	return returnValue *50;
 }
