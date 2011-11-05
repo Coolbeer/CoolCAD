@@ -26,11 +26,12 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	dotPen.setStyle(Qt::DashLine);
 	dotPen.setColor(QColor(200,200,200));
 	painter.setPen(dotPen);
-	painter.fillRect(0,0,2000,2000,QColor(255,255,255));
-	for(uint16_t x = 0; x != 2000; x += 50)
+	painter.fillRect(-2000,-2000,4000,4000,QColor(255,255,255));
+
+	for(int16_t x = -2000; x != 2000; x += 50)
 	{
-		painter.drawLine(x,0,x,2000);
-		painter.drawLine(0,x,2000,x);
+		painter.drawLine(x,-2000,x,2000);
+		painter.drawLine(-2000,x,2000,x);
 	}
 	dotPen.setColor(QColor(100,100,100));
 	painter.setPen(dotPen);
@@ -113,7 +114,7 @@ void t_partEditor2::wheelEvent(QWheelEvent *event)
 
 uint16_t t_partEditor2::roundNumber(uint16_t number)
 {
-	uint16_t tempVal = 50*scale;
+	double tempVal = 50*scale;
 	uint16_t returnValue = number / tempVal;
 	if(number -returnValue*tempVal >= tempVal/2)
 		++returnValue;
