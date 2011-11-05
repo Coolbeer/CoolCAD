@@ -6,12 +6,7 @@
 
 t_mainWindow::t_mainWindow(void)
 {
-	QAction *pEditor;
-	QMenu *toolsMenu;
 	QMdiArea *mdiArea = new QMdiArea;
-	QMenuBar *menuB = new QMenuBar;
-	toolsMenu = menuB->addMenu("Tools");
-	pEditor = toolsMenu->addAction("Part Editor");
 
     t_schObject *testObj = new t_schObject;
     mainWidget = new QGraphicsView;
@@ -21,5 +16,15 @@ t_mainWindow::t_mainWindow(void)
 
 	mainScene->addItem(testObj);
     mainWidget->setScene(mainScene);
-	this->setMenuBar(menuB);
+
+	createMenu();
+}
+
+void t_mainWindow::createMenu(void)
+{
+	QMenuBar *menuB = new QMenuBar;
+	QMenu *toolsMenu;
+	toolsMenu = menuB->addMenu("Tools");
+	pEditor = toolsMenu->addAction("Part Editor");
+	setMenuBar(menuB);
 }

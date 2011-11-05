@@ -11,6 +11,8 @@ class t_mainWindow : public QMainWindow
     private:
         QGraphicsView   *mainWidget;
         QGraphicsScene  *mainScene;
+		QAction			*pEditor;
+		void			createMenu(void);
 };
 
 #endif
