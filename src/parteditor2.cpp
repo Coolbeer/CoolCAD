@@ -101,9 +101,9 @@ void t_partEditor2::wheelEvent(QWheelEvent *event)
 	std::cout << numSteps << "\n";
 	if (event->orientation() == Qt::Vertical)
 	{
-		if(event->delta() > 0)
+		if((event->delta() > 0) && scale < 3)
 			scale += 0.01;
-		else if(event->delta() < 0)
+		else if((event->delta() < 0) && scale >0.1)
 			scale -= 0.01;
 	}
 	std::cout << scale << "\n";
