@@ -1,23 +1,15 @@
-#include "mainWindow.h"
-#include "t_schObject.h"
-#include <QtGui/QMenuBar>
-#include <QtGui/QMdiArea>
+#include "mainWindow.moc"
 
+#include <QtGui/QMenuBar>
+#include <iostream>
 
 t_mainWindow::t_mainWindow(void)
 {
-	QMdiArea *mdiArea = new QMdiArea;
-
-    t_schObject *testObj = new t_schObject;
-    mainWidget = new QGraphicsView;
-    mainScene = new QGraphicsScene;
+	mdiArea = new QMdiArea;
 	setCentralWidget(mdiArea);
-	mdiArea->addSubWindow(mainWidget);
-
-	mainScene->addItem(testObj);
-    mainWidget->setScene(mainScene);
 
 	createMenu();
+//	mdiArea->setViewMode(QMdiArea::TabbedView); //Enable this when we have more than one window
 }
 
 void t_mainWindow::createMenu(void)
@@ -25,6 +17,17 @@ void t_mainWindow::createMenu(void)
 	QMenuBar *menuB = new QMenuBar;
 	QMenu *toolsMenu;
 	toolsMenu = menuB->addMenu("Tools");
-	pEditor = toolsMenu->addAction("Part Editor");
+	pEditorAction = toolsMenu->addAction("Part Editor");
 	setMenuBar(menuB);
+
+	connect(pEditorAction, SIGNAL(triggered()), this, SLOT(openPartEditor()));
+}
+
+void t_mainWindow::openPartEditor(void)
+{
+	pEditor = new t_partEditor2;
+	partEditorWindow = mdiArea->addSubWindow(pEditor, Qt::Window);
+//	partEditorWindow->hide();
+
+	partEditorWindow->showMaximized();
 }

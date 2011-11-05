@@ -2,17 +2,25 @@
 #define MAINWINDOW_H
 
 #include <QtGui/QMainWindow>
-#include <QtGui/QGraphicsView>
+#include <QtGui/QMdiArea>
+#include <QtGui/QMdiSubWindow>
+
+#include "parteditor2.h"
 
 class t_mainWindow : public QMainWindow
 {
+	Q_OBJECT
     public:
                         t_mainWindow();
+	public slots:
+		void			openPartEditor(void);
     private:
-        QGraphicsView   *mainWidget;
-        QGraphicsScene  *mainScene;
-		QAction			*pEditor;
+		QAction			*pEditorAction;
+		QMdiArea		*mdiArea;
+		QMdiSubWindow	*partEditorWindow;
+		t_partEditor2	*pEditor;
 		void			createMenu(void);
+		void			testObject(void);
 };
 
 #endif

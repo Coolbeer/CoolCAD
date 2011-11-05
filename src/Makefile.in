@@ -46,7 +46,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_cooleda_OBJECTS = main.$(OBJEXT) mainWindow.$(OBJEXT) \
-	t_schObject.$(OBJEXT)
+	t_schObject.$(OBJEXT) parteditor.$(OBJEXT) \
+	parteditor2.$(OBJEXT)
 cooleda_OBJECTS = $(am_cooleda_OBJECTS)
 cooleda_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -154,20 +155,19 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 cooleda_SOURCES = \
-    main.cpp \
-    mainWindow.cpp \
-    t_schObject.cpp
+	main.cpp \
+	mainWindow.cpp \
+	t_schObject.cpp \
+	parteditor.cpp \
+	parteditor2.cpp
 
-
-#mainWindow.moc:
-#	moc mainWindow.h -o mainWindow.moc
 CLEANFILES = *~ *moc
-AM_CXXFLAGS = $(QtCore_CFLAGS) $(QtGui_CFLAGS)
+AM_CXXFLAGS = $(QtCore_CFLAGS) $(QtGui_CFLAGS) -Wall -Wextra -pedantic -std=c++0x
 AM_LDFLAGS = $(QtCore_LIBS) $(QtGui_LIBS)
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cpp .o .obj
+.SUFFIXES: .cpp .h .moc .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -247,6 +247,8 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainWindow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parteditor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parteditor2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_schObject.Po@am__quote@
 
 .cpp.o:
@@ -463,11 +465,20 @@ uninstall-am: uninstall-binPROGRAMS
 	uninstall-am uninstall-binPROGRAMS
 
 
-t_schObject.cpp:t_schObject.moc
-#mainWindow.cpp:mainWindow.moc
+mainWindow.moc:mainWindow.h
+mainWindow.cpp:mainWindow.moc
 
-t_schObject.moc:
-	moc t_schObject.h -o t_schObject.moc
+t_schObject.moc:t_schObject.h
+t_schObject.cpp:t_schObject.moc
+
+parteditor.moc:parteditor.h
+parteditor.cpp:parteditor.moc
+
+parteditor2.moc:parteditor2.h
+parteditor2.cpp:parteditor2.moc
+
+.h.moc:
+	moc $< -o$@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
