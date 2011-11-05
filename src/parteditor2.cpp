@@ -91,7 +91,7 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 
 void t_partEditor2::cancel(void)
 {
-	if(mode = LINE)
+	if(mode == LINE)
 		mode = NORMAL;
 }
 
