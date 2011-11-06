@@ -30,7 +30,6 @@ class t_partEditor2 : public QWidget
 		uint8_t				toolBarButton;
 		t_symbol			*symbol;
 		uint16_t			translateMouse(uint16_t);
-		QLine				convertGrid(const QLine &input);
 		t_infoWindow		*infoWindow;
 	protected:
 		void				paintEvent(QPaintEvent *event);

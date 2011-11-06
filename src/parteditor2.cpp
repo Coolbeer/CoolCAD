@@ -39,30 +39,39 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 		painter.drawLine(-2000,x,2000,x);
 	}
 
-	dotPen.setColor(QColor(200,100,100));
-	dotPen.setWidth(5);
-	dotPen.setStyle(Qt::SolidLine);
-	painter.setPen(dotPen);
-
-	if(!symbol->wires.empty())
+	if(!symbol->items.empty())
 	{
-		for(std::vector<t_wireObject>::iterator iter = symbol->wires.begin(); iter != symbol->wires.end(); ++iter)
+		for(uint8_t teller = 0;  teller != symbol->items.size(); ++teller)
 		{
-			painter.drawLine(convertGrid(iter->line));
-		}
-	}
-	if(!symbol->pins.empty())
-	{
-		for(std::vector<t_pinObject>::iterator iter = symbol->pins.begin(); iter != symbol->pins.end(); ++iter)
-		{
-			dotPen.setWidth(0);
-			dotPen.setColor(QColor(50,200,50));
-			painter.setPen(dotPen);
-			painter.drawEllipse(QPoint(500+(iter->position.x()*50), 500+(iter->position.y()*50)), 10, 10);
+/*			if(symbol->items.at(teller)->selected)
+				dotPen.setColor(QColor(200,10,10));
+			else
+				dotPen.setColor(QColor(200,100,100));
+*/
+			if(symbol->items.at(teller)->type == WIRE)
+			{
+				dotPen.setWidth(5);
+				dotPen.setStyle(Qt::SolidLine);
+				dotPen.setColor(QColor(200,100,100));
+				painter.setPen(dotPen);
+				painter.drawLine(symbol->items.at(teller)->getData());
+			}
+			else if(symbol->items.at(teller)->type == PIN)
+			{
+				dotPen.setWidth(0);
+				dotPen.setColor(QColor(50,200,50));
+				painter.setPen(dotPen);
+				painter.drawEllipse(symbol->items.at(teller)->getData().p1(), 10, 10);
+			}
 		}
 	}
 	if((mode == LINE || mode & EDIT) && startDotX != -10000 && startDotY != -10000)
 	{
+		dotPen.setWidth(5);
+		dotPen.setStyle(Qt::SolidLine);
+		dotPen.setColor(QColor(200,100,100));
+		painter.setPen(dotPen);
+		
 		QLine convLine;
 		convLine.setPoints(QPoint(500+(startDotX*50), 500+(startDotY*50)), QPoint(500+(dotX*50), 500+(dotY*50)));
 		painter.drawLine(convLine);
@@ -75,12 +84,6 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	painter.drawLine(490,500,510,500);
 }
 
-QLine t_partEditor2::convertGrid(const QLine &input)
-{
-	QLine returnValue(500+(input.x1()*50), 500+(input.y1()*50), 500+(input.x2()*50), 500+(input.y2()*50));
-	return returnValue;
-}
-
 void t_partEditor2::mouseMoveEvent(QMouseEvent *event)
 {
 	dotX = (-500+roundNumber(translateMouse(event->x())))/50;
@@ -91,18 +94,24 @@ void t_partEditor2::mouseMoveEvent(QMouseEvent *event)
 
 void t_partEditor2::mousePressEvent(QMouseEvent *event)
 {
+	std::vector<t_symbolObject*> itemList;
 	if(event->button() == Qt::LeftButton)
 	{
 		std::cout << event->x() << " - " << event->y() << "\n";
 		if(mode == MOVE)
 		{
-			int16_t tempX = (-500+roundNumber(translateMouse(event->x())))/50;
+/*			int16_t tempX = (-500+roundNumber(translateMouse(event->x())))/50;
 			int16_t tempY = (-500+roundNumber(translateMouse(event->y())))/50;
 			std::cout << tempX << " = " << tempY << "\n";
-			for(std::vector<t_wireObject>::iterator iter = symbol->wires.begin(); iter != symbol->wires.end(); ++iter)
+			for(uint8_t teller = 0; teller != symbol->items.size(); ++teller)
 			{
-				if((iter->line.x1() == tempX && iter->line.y1() == tempY) || (iter->line.x2() == tempX && iter->line.y2() == tempY))
+
+				if((symbol->items.at(teller).  .line.x1() == tempX && symbol->items.line.y1() == tempY) || (symbol->items.line.x2() == tempX && symbol->items.line.y2() == tempY))
 				{
+					t_wireObject *test;
+					test = static_cast<t_wireObject*>(&symbol->items.at(teller));
+
+					itemList.push_back(*iter);
 					if(tempX == iter->line.x1())
 					{
 						startDotX = iter->line.x2();
@@ -116,8 +125,11 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 					symbol->wires.erase(iter);
 					mode |= EDIT;
 					break;
+
 				}
+				std::cout << itemList.size() << " <--\n";
 			}
+			*/
 		}
 		else if(mode == LINE)
 		{
@@ -135,7 +147,7 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 		}
 		else if(mode == INFO)
 		{
-			infoWindow = new t_infoWindow(*symbol->pins.begin());
+//			infoWindow = new t_infoWindow(*symbol->pins.begin());
 			infoWindow->show();
 		}
 		else if(mode & EDIT)

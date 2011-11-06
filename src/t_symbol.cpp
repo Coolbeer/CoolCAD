@@ -8,29 +8,64 @@ t_symbol::t_symbol(void)
 
 void t_symbol::addLine(QLine &line)
 {
-	t_wireObject tmpWire;
-	tmpWire.line = line;
-	tmpWire.name = "p" + boost::lexical_cast<std::string>(wireNames);
+	t_wireObject *tmpWire = new t_wireObject;
+	tmpWire->data = line;
+	tmpWire->name = "p" + boost::lexical_cast<std::string>(wireNames);
 	++wireNames;
-	wires.push_back(tmpWire);
+	items.push_back(tmpWire);
 }
 
 void t_symbol::addPin(QPoint &pos)
 {
-	t_pinObject tmpPin;
-	tmpPin.position = pos;
-	tmpPin.name = "w" + boost::lexical_cast<std::string>(pinNames);
+	t_pinObject *tmpPin = new t_pinObject;
+	tmpPin->data = pos;
+	tmpPin->name = "w" + boost::lexical_cast<std::string>(pinNames);
 	++pinNames;
-	pins.push_back(tmpPin);
+	items.push_back(tmpPin);
 }
 
 
 t_wireObject::t_wireObject(void)
 {
 	type = WIRE;
+	selected = false;
 }
 
 t_pinObject::t_pinObject(void)
 {
 	type = PIN;
+	selected = false;
+}
+
+
+t_symbolObject::~t_symbolObject(void)
+{
+
+}
+
+t_symbolObject::t_symbolObject(void)
+{
+
+}
+
+t_wireObject::~t_wireObject(void)
+{
+
+}
+
+t_pinObject::~t_pinObject(void)
+{
+
+}
+
+QLine t_wireObject::getData(void)
+{
+	QLine returnValue(500+(data.x1()*50), 500+(data.y1()*50), 500+(data.x2()*50), 500+(data.y2()*50));
+	return returnValue;
+}
+
+QLine t_pinObject::getData(void)
+{
+	QPoint returnValue((500+(data.x()*50)), (500+(data.y()*50)));
+	return QLine(returnValue, returnValue);
 }

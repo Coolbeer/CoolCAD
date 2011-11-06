@@ -4,11 +4,12 @@
 #include <vector>
 #include <string>
 #include <QtCore/QLine>
+#include <QtCore/QPoint>
 #include <cstdint>
 
 class t_wireObject;
 class t_pinObject;
-class symbolObject;
+class t_symbolObject;
 
 #define MOVE 1
 #define WIRE 2
@@ -22,8 +23,8 @@ class t_symbol
 		void							addLine(QLine &line);
 		void							addPin(QPoint &pos);
 		bool							empty(void);
-		std::vector<t_wireObject>		wires;
-		std::vector<t_pinObject>		pins;
+		std::vector<t_symbolObject*>	items;
+//		std::vector<t_pinObject>		pins;
 	private:
 		uint16_t						wireNames, pinNames;
 };
@@ -33,20 +34,28 @@ class t_symbolObject
 	public:
 		std::string						name;
 		uint8_t							type;
+		bool							selected;
+		virtual							~t_symbolObject(void);
+		    							t_symbolObject(void);
+		virtual QLine					getData(void) = 0;
 };
 
 class t_wireObject : public t_symbolObject
 {
 	public:
+		virtual							~t_wireObject(void);
 										t_wireObject(void);
-		QLine							line;
+		virtual QLine					getData(void);
+		QLine							data;
 };
 
 class t_pinObject : public t_symbolObject
 {
 	public:
+		virtual							~t_pinObject(void);
 										t_pinObject(void);
-		QPoint							position;
+		virtual QLine					getData(void);
+		QPoint							data;
 };
 
 #endif
