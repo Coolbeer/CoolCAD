@@ -44,23 +44,21 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	dotPen.setStyle(Qt::SolidLine);
 	painter.setPen(dotPen);
 
-	if(!symbol->internalLines.empty())
+	if(!symbol->wires.empty())
 	{
-		for(std::vector<QLine>::iterator iter = symbol->internalLines.begin(); iter != symbol->internalLines.end(); ++iter)
+		for(std::vector<wireObject>::iterator iter = symbol->wires.begin(); iter != symbol->wires.end(); ++iter)
 		{
-			QLine convLine;
-			convLine.setPoints(QPoint(500+(iter->x1()*50), 500+(iter->y1()*50)), QPoint(500+(iter->x2()*50), 500+iter->y2()*50));
-			painter.drawLine(convLine);
+			painter.drawLine(convertGrid(iter->line));
 		}
 	}
-	if(!symbol->internalPins.empty())
+	if(!symbol->pins.empty())
 	{
-		for(std::vector<QPoint>::iterator iter = symbol->internalPins.begin(); iter != symbol->internalPins.end(); ++iter)
+		for(std::vector<pinObject>::iterator iter = symbol->pins.begin(); iter != symbol->pins.end(); ++iter)
 		{
 			dotPen.setWidth(0);
 			dotPen.setColor(QColor(50,200,50));
 			painter.setPen(dotPen);
-			painter.drawEllipse(QPoint(500+(iter->x()*50), 500+(iter->y()*50)), 10, 10);
+			painter.drawEllipse(QPoint(500+(iter->position.x()*50), 500+(iter->position.y()*50)), 10, 10);
 		}
 	}
 	if((mode == LINE || mode & EDIT) && startDotX != -10000 && startDotY != -10000)
@@ -75,6 +73,12 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	painter.setPen(dotPen);
 	painter.drawLine(500,490,500,510);
 	painter.drawLine(490,500,510,500);
+}
+
+QLine t_partEditor2::convertGrid(const QLine &input)
+{
+	QLine returnValue(500+(input.x1()*50), 500+(input.y1()*50), 500+(input.x2()*50), 500+(input.y2()*50));
+	return returnValue;
 }
 
 void t_partEditor2::mouseMoveEvent(QMouseEvent *event)
@@ -95,21 +99,21 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 			int16_t tempX = (-500+roundNumber(translateMouse(event->x())))/50;
 			int16_t tempY = (-500+roundNumber(translateMouse(event->y())))/50;
 			std::cout << tempX << " = " << tempY << "\n";
-			for(std::vector<QLine>::iterator iter = symbol->internalLines.begin(); iter != symbol->internalLines.end(); ++iter)
+			for(std::vector<wireObject>::iterator iter = symbol->wires.begin(); iter != symbol->wires.end(); ++iter)
 			{
-				if((iter->x1() == tempX && iter->y1() == tempY) || (iter->x2() == tempX && iter->y2() == tempY))
+				if((iter->line.x1() == tempX && iter->line.y1() == tempY) || (iter->line.x2() == tempX && iter->line.y2() == tempY))
 				{
-					if(tempX == iter->x1())
+					if(tempX == iter->line.x1())
 					{
-						startDotX = iter->x2();
-						startDotY = iter->y2();
+						startDotX = iter->line.x2();
+						startDotY = iter->line.y2();
 					}
 					else
 					{
-						startDotX = iter->x1();
-						startDotY = iter->y1();
+						startDotX = iter->line.x1();
+						startDotY = iter->line.y1();
 					}
-					symbol->internalLines.erase(iter);
+					symbol->wires.erase(iter);
 					mode |= EDIT;
 					break;
 				}
@@ -127,7 +131,7 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 		else if(mode == PIN)
 		{
 			QPoint pinPoint((-500+roundNumber(translateMouse(event->x())))/50,(-500+roundNumber(translateMouse(event->y())))/50);
-			symbol->internalPins.push_back(pinPoint);
+			symbol->addPin(pinPoint);
 		}
 		else if(mode & EDIT)
 		{
