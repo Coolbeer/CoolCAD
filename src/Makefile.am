@@ -4,7 +4,8 @@ cooleda_SOURCES = \
 	mainWindow.cpp \
 	t_schObject.cpp \
 	parteditor2.cpp \
-	t_symbol.cpp
+	t_symbol.cpp \
+	t_infoWindow.cpp
 
 mainWindow.moc:mainWindow.h
 mainWindow.cpp:mainWindow.moc
