@@ -9,9 +9,9 @@ t_partEditor2::t_partEditor2(void)
 {
 	setMouseTracking(true);
 	mode = MOVE;
-	scale = 0.5;
-	startDotX = 0;
-	startDotY = 0;
+	scale = 1;
+	startDotX = -10000;
+	startDotY = -10000;
 	symbol = new t_symbol;
 }
 
@@ -47,11 +47,17 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	if(!symbol->empty())
 	{
 		for(std::vector<QLine>::iterator iter = symbol->begin(); iter != symbol->end(); ++iter)
-			painter.drawLine(*iter);
+		{
+			QLine convLine;
+			convLine.setPoints(QPoint(500+(iter->x1()*50), 500+(iter->y1()*50)), QPoint(500+(iter->x2()*50), 500+iter->y2()*50));
+			painter.drawLine(convLine);
+		}
 	}
-	if((mode == LINE || mode & EDIT) && startDotX != 0 && startDotY != 0)
+	if((mode == LINE || mode & EDIT) && startDotX != -10000 && startDotY != -10000)
 	{
-		painter.drawLine(startDotX, startDotY, dotX, dotY);
+		QLine convLine;
+		convLine.setPoints(QPoint(500+(startDotX*50), 500+(startDotY*50)), QPoint(500+(dotX*50), 500+(dotY*50)));
+		painter.drawLine(convLine);
 	}
 
 	dotPen.setColor(QColor(100,100,100));
@@ -63,8 +69,8 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 
 void t_partEditor2::mouseMoveEvent(QMouseEvent *event)
 {
-	dotX = roundNumber(event->x())/scale;
-	dotY = roundNumber(event->y())/scale;
+	dotX = (-500+(roundNumber(translateMouse(event->x()))))/50;
+	dotY = (-500+(roundNumber(translateMouse(event->y()))))/50;
 	repaint();
 	event->accept();
 }
@@ -73,17 +79,26 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 {
 	if(event->button() == Qt::LeftButton)
 	{
+		std::cout << event->x() << " - " << event->y() << "\n";
 		if(mode == MOVE)
 		{
-			uint16_t tempX = roundNumber(event->x())/scale;
-			uint16_t tempY = roundNumber(event->y())/scale;
+			uint16_t tempX = roundNumber(translateMouse(event->x()));
+			uint16_t tempY = roundNumber(translateMouse(event->y()));
 
 			for(std::vector<QLine>::iterator iter = symbol->begin(); iter != symbol->end(); ++iter)
 			{
 				if((iter->x1() == tempX && iter->y1() == tempY) || (iter->x2() == tempX && iter->y2() == tempY))
 				{
-					startDotX = iter->x2();
-					startDotY = iter->y2();
+					if(tempX == iter->x1())
+					{
+						startDotX = iter->x2();
+						startDotY = iter->y2();
+					}
+					else
+					{
+						startDotX = iter->x1();
+						startDotY = iter->y1();
+					}
 					symbol->removeLine(iter - symbol->begin());
 					mode |= EDIT;
 					break;
@@ -92,20 +107,20 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 		}
 		else if(mode == LINE)
 		{
-			if(startDotX == 0 && startDotY == 0)
+			if(startDotX == -10000 && startDotY == -10000)
 			{
-				startDotX = roundNumber(event->x())/scale;
-				startDotY = roundNumber(event->y())/scale;
+				startDotX = ((-500+roundNumber(translateMouse(event->x())))/50);
+				startDotY = ((-500+roundNumber(translateMouse(event->y())))/50);
 				mode |= EDIT;
 			}
 		}
 		else if(mode & EDIT)
 		{
 			QLine newLine;
-			newLine.setLine(startDotX, startDotY, roundNumber(event->x())/scale, roundNumber(event->y())/scale);
+			newLine.setLine(startDotX, startDotY, dotX, dotY);
 			symbol->addLine(newLine);
-			startDotX = 0;
-			startDotY = 0;
+			startDotX = -10000;
+			startDotY = -10000;
 			mode &= ~EDIT;
 		}
 
@@ -145,9 +160,13 @@ void t_partEditor2::setToolBarButton(uint8_t number)
 	mode = number;
 }
 
+uint16_t t_partEditor2::translateMouse(uint16_t num)
+{
+	return num/scale;
+}
 uint16_t t_partEditor2::roundNumber(uint16_t number)
 {
-	double tempVal = 50*scale;
+	double tempVal = 50;
 	uint16_t returnValue = number / tempVal;
 	if(number -returnValue*tempVal >= tempVal/2)
 		++returnValue;

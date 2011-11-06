@@ -20,12 +20,13 @@ class t_partEditor2 : public QWidget
 		void				setToolBarButton(uint8_t number);
 	private:
 		void				drawGrid(void);
-		uint16_t			dotX, dotY;
-		uint16_t			startDotX, startDotY;
+		int16_t				dotX, dotY;
+		int16_t				startDotX, startDotY;
 		uint8_t				mode;
 		double				scale;
 		uint8_t				toolBarButton;
 		t_symbol			*symbol;
+		uint16_t			translateMouse(uint16_t);
 	protected:
 		void				paintEvent(QPaintEvent *event);
 		void				mouseMoveEvent(QMouseEvent *event);
