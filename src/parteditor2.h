@@ -4,6 +4,8 @@
 #include <QtGui/QWidget>
 #include <cstdint>
 
+#include "t_symbol.h"
+
 #define MOVE 0
 #define LINE 1
 
@@ -20,9 +22,9 @@ class t_partEditor2 : public QWidget
 		uint16_t			dotX, dotY;
 		uint16_t			startDotX, startDotY;
 		uint8_t				mode;
-		std::vector<QRect>	partLines;
 		double				scale;
 		uint8_t				toolBarButton;
+		t_symbol			*symbol;
 	protected:
 		void				paintEvent(QPaintEvent *event);
 		void				mouseMoveEvent(QMouseEvent *event);

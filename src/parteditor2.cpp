@@ -1,4 +1,5 @@
 #include "parteditor2.moc"
+
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <cstdint>
@@ -11,6 +12,7 @@ t_partEditor2::t_partEditor2(void)
 	scale = 0.5;
 	startDotX = 0;
 	startDotY = 0;
+	symbol = new t_symbol;
 }
 
 void t_partEditor2::drawGrid(void)
@@ -42,10 +44,10 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	dotPen.setStyle(Qt::SolidLine);
 	painter.setPen(dotPen);
 
-	if(!partLines.empty())
+	if(!symbol->empty())
 	{
-		for(std::vector<QRect>::iterator iter = partLines.begin(); iter != partLines.end(); ++iter)
-			painter.drawLine(iter->x(), iter->y(), iter->width(), iter->height());
+		for(std::vector<QLine>::iterator iter = symbol->begin(); iter != symbol->end(); ++iter)
+			painter.drawLine(*iter);
 	}
 	if(mode == LINE && startDotX != 0 && startDotY != 0)
 	{
@@ -83,12 +85,9 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 			}
 			else
 			{
-				QRect newRect;
-				newRect.setX(startDotX);
-				newRect.setY(startDotY);
-				newRect.setWidth(roundNumber(event->x())/scale);
-				newRect.setHeight(roundNumber(event->y())/scale);
-				partLines.push_back(newRect);
+				QLine newLine;
+				newLine.setLine(startDotX, startDotY, roundNumber(event->x())/scale, roundNumber(event->y())/scale);
+				symbol->addLine(newLine);
 				startDotX = 0;
 				startDotY = 0;
 			}
