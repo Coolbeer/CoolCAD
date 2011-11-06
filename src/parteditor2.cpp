@@ -25,20 +25,17 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	painter.scale(scale, scale);
 	painter.setBackgroundMode(Qt::OpaqueMode);
 	painter.setBackground(QBrush(QColor(255,255,255)));
-	dotPen.setStyle(Qt::DashLine);
-	dotPen.setColor(QColor(200,200,200));
-	painter.setPen(dotPen);
 	painter.fillRect(-2000,-2000,4000,4000,QColor(255,255,255));
 
+	dotPen.setStyle(Qt::DashLine);
+	dotPen.setColor(QColor(200,200,200));
+	dotPen.setWidth(0);
+	painter.setPen(dotPen);
 	for(int16_t x = -2000; x != 2000; x += 50)
 	{
 		painter.drawLine(x,-2000,x,2000);
 		painter.drawLine(-2000,x,2000,x);
 	}
-	dotPen.setColor(QColor(100,100,100));
-	painter.setPen(dotPen);
-	painter.drawLine(500,490,500,510);
-	painter.drawLine(490,500,510,500);
 
 	dotPen.setColor(QColor(200,100,100));
 	dotPen.setWidth(5);
@@ -54,6 +51,12 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	{
 		painter.drawLine(startDotX, startDotY, dotX, dotY);
 	}
+
+	dotPen.setColor(QColor(100,100,100));
+	dotPen.setWidth(1);
+	painter.setPen(dotPen);
+	painter.drawLine(500,490,500,510);
+	painter.drawLine(490,500,510,500);
 }
 
 void t_partEditor2::mouseMoveEvent(QMouseEvent *event)

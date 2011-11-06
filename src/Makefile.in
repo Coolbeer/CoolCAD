@@ -47,7 +47,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_cooleda_OBJECTS = main.$(OBJEXT) mainWindow.$(OBJEXT) \
 	t_schObject.$(OBJEXT) parteditor.$(OBJEXT) \
-	parteditor2.$(OBJEXT)
+	parteditor2.$(OBJEXT) t_symbol.$(OBJEXT)
 cooleda_OBJECTS = $(am_cooleda_OBJECTS)
 cooleda_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -159,7 +159,8 @@ cooleda_SOURCES = \
 	mainWindow.cpp \
 	t_schObject.cpp \
 	parteditor.cpp \
-	parteditor2.cpp
+	parteditor2.cpp \
+	t_symbol.cpp
 
 CLEANFILES = *~ *moc
 AM_CXXFLAGS = $(QtCore_CFLAGS) $(QtGui_CFLAGS) -Wall -Wextra -pedantic -std=c++0x
@@ -250,6 +251,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parteditor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parteditor2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_schObject.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_symbol.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
