@@ -44,13 +44,23 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 	dotPen.setStyle(Qt::SolidLine);
 	painter.setPen(dotPen);
 
-	if(!symbol->empty())
+	if(!symbol->internalLines.empty())
 	{
-		for(std::vector<QLine>::iterator iter = symbol->begin(); iter != symbol->end(); ++iter)
+		for(std::vector<QLine>::iterator iter = symbol->internalLines.begin(); iter != symbol->internalLines.end(); ++iter)
 		{
 			QLine convLine;
 			convLine.setPoints(QPoint(500+(iter->x1()*50), 500+(iter->y1()*50)), QPoint(500+(iter->x2()*50), 500+iter->y2()*50));
 			painter.drawLine(convLine);
+		}
+	}
+	if(!symbol->internalPins.empty())
+	{
+		for(std::vector<QPoint>::iterator iter = symbol->internalPins.begin(); iter != symbol->internalPins.end(); ++iter)
+		{
+			dotPen.setWidth(0);
+			dotPen.setColor(QColor(50,200,50));
+			painter.setPen(dotPen);
+			painter.drawEllipse(QPoint(500+(iter->x()*50), 500+(iter->y()*50)), 10, 10);
 		}
 	}
 	if((mode == LINE || mode & EDIT) && startDotX != -10000 && startDotY != -10000)
@@ -85,7 +95,7 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 			int16_t tempX = (-500+roundNumber(translateMouse(event->x())))/50;
 			int16_t tempY = (-500+roundNumber(translateMouse(event->y())))/50;
 			std::cout << tempX << " = " << tempY << "\n";
-			for(std::vector<QLine>::iterator iter = symbol->begin(); iter != symbol->end(); ++iter)
+			for(std::vector<QLine>::iterator iter = symbol->internalLines.begin(); iter != symbol->internalLines.end(); ++iter)
 			{
 				if((iter->x1() == tempX && iter->y1() == tempY) || (iter->x2() == tempX && iter->y2() == tempY))
 				{
@@ -99,7 +109,7 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 						startDotX = iter->x1();
 						startDotY = iter->y1();
 					}
-					symbol->removeLine(iter - symbol->begin());
+					symbol->internalLines.erase(iter);
 					mode |= EDIT;
 					break;
 				}
@@ -113,6 +123,11 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 				startDotY = (-500+roundNumber(translateMouse(event->y())))/50;
 				mode |= EDIT;
 			}
+		}
+		else if(mode == PIN)
+		{
+			QPoint pinPoint((-500+roundNumber(translateMouse(event->x())))/50,(-500+roundNumber(translateMouse(event->y())))/50);
+			symbol->internalPins.push_back(pinPoint);
 		}
 		else if(mode & EDIT)
 		{
