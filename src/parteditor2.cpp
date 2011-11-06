@@ -13,6 +13,7 @@ t_partEditor2::t_partEditor2(void)
 	startDotX = -10000;
 	startDotY = -10000;
 	symbol = new t_symbol;
+	connect(this, SIGNAL(drawWireSignal(QPoint)), this, SLOT(drawWire(QPoint)));
 }
 
 void t_partEditor2::drawGrid(void)
@@ -133,6 +134,7 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 		}
 		else if(mode == LINE)
 		{
+			emit drawWireSignal(event->pos());
 			if(startDotX == -10000 && startDotY == -10000)
 			{
 				startDotX = (-500+roundNumber(translateMouse(event->x())))/50;
@@ -163,6 +165,11 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 	}
 	event->accept();
 	repaint();
+}
+
+void t_partEditor2::drawWire(QPoint pos)
+{
+	std::cout << pos.x() << "---" << pos.y() << "\n";
 }
 
 void t_partEditor2::cancel(void)

@@ -21,6 +21,8 @@ class t_partEditor2 : public QWidget
 		uint16_t			roundNumber(uint16_t number);
 		void				cancel(void);
 		void				setToolBarButton(uint8_t number);
+	public slots:
+		void				drawWire(QPoint pos);
 	private:
 		void				drawGrid(void);
 		int16_t				dotX, dotY;
@@ -31,6 +33,8 @@ class t_partEditor2 : public QWidget
 		t_symbol			*symbol;
 		uint16_t			translateMouse(uint16_t);
 		t_infoWindow		*infoWindow;
+	signals:
+		void				drawWireSignal(QPoint pos);
 	protected:
 		void				paintEvent(QPaintEvent *event);
 		void				mouseMoveEvent(QMouseEvent *event);
