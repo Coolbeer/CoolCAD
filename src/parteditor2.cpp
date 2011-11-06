@@ -69,8 +69,8 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 
 void t_partEditor2::mouseMoveEvent(QMouseEvent *event)
 {
-	dotX = (-500+(roundNumber(translateMouse(event->x()))))/50;
-	dotY = (-500+(roundNumber(translateMouse(event->y()))))/50;
+	dotX = (-500+roundNumber(translateMouse(event->x())))/50;
+	dotY = (-500+roundNumber(translateMouse(event->y())))/50;
 	repaint();
 	event->accept();
 }
@@ -82,9 +82,9 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 		std::cout << event->x() << " - " << event->y() << "\n";
 		if(mode == MOVE)
 		{
-			uint16_t tempX = roundNumber(translateMouse(event->x()));
-			uint16_t tempY = roundNumber(translateMouse(event->y()));
-
+			int16_t tempX = (-500+roundNumber(translateMouse(event->x())))/50;
+			int16_t tempY = (-500+roundNumber(translateMouse(event->y())))/50;
+			std::cout << tempX << " = " << tempY << "\n";
 			for(std::vector<QLine>::iterator iter = symbol->begin(); iter != symbol->end(); ++iter)
 			{
 				if((iter->x1() == tempX && iter->y1() == tempY) || (iter->x2() == tempX && iter->y2() == tempY))
@@ -109,8 +109,8 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 		{
 			if(startDotX == -10000 && startDotY == -10000)
 			{
-				startDotX = ((-500+roundNumber(translateMouse(event->x())))/50);
-				startDotY = ((-500+roundNumber(translateMouse(event->y())))/50);
+				startDotX = (-500+roundNumber(translateMouse(event->x())))/50;
+				startDotY = (-500+roundNumber(translateMouse(event->y())))/50;
 				mode |= EDIT;
 			}
 		}
