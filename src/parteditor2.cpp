@@ -46,14 +46,14 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 
 	if(!symbol->wires.empty())
 	{
-		for(std::vector<wireObject>::iterator iter = symbol->wires.begin(); iter != symbol->wires.end(); ++iter)
+		for(std::vector<t_wireObject>::iterator iter = symbol->wires.begin(); iter != symbol->wires.end(); ++iter)
 		{
 			painter.drawLine(convertGrid(iter->line));
 		}
 	}
 	if(!symbol->pins.empty())
 	{
-		for(std::vector<pinObject>::iterator iter = symbol->pins.begin(); iter != symbol->pins.end(); ++iter)
+		for(std::vector<t_pinObject>::iterator iter = symbol->pins.begin(); iter != symbol->pins.end(); ++iter)
 		{
 			dotPen.setWidth(0);
 			dotPen.setColor(QColor(50,200,50));
@@ -99,7 +99,7 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 			int16_t tempX = (-500+roundNumber(translateMouse(event->x())))/50;
 			int16_t tempY = (-500+roundNumber(translateMouse(event->y())))/50;
 			std::cout << tempX << " = " << tempY << "\n";
-			for(std::vector<wireObject>::iterator iter = symbol->wires.begin(); iter != symbol->wires.end(); ++iter)
+			for(std::vector<t_wireObject>::iterator iter = symbol->wires.begin(); iter != symbol->wires.end(); ++iter)
 			{
 				if((iter->line.x1() == tempX && iter->line.y1() == tempY) || (iter->line.x2() == tempX && iter->line.y2() == tempY))
 				{
@@ -132,6 +132,11 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 		{
 			QPoint pinPoint((-500+roundNumber(translateMouse(event->x())))/50,(-500+roundNumber(translateMouse(event->y())))/50);
 			symbol->addPin(pinPoint);
+		}
+		else if(mode == INFO)
+		{
+			infoWindow = new t_infoWindow(*symbol->wires.begin());
+			infoWindow->show();
 		}
 		else if(mode & EDIT)
 		{

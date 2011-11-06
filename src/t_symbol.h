@@ -6,8 +6,8 @@
 #include <QtCore/QLine>
 #include <cstdint>
 
-class wireObject;
-class pinObject;
+class t_wireObject;
+class t_pinObject;
 class symbolObject;
 
 #define MOVE 1
@@ -22,30 +22,30 @@ class t_symbol
 		void							addLine(QLine &line);
 		void							addPin(QPoint &pos);
 		bool							empty(void);
-		std::vector<wireObject>			wires;
-		std::vector<pinObject>			pins;
+		std::vector<t_wireObject>		wires;
+		std::vector<t_pinObject>		pins;
 	private:
 		uint16_t						wireNames, pinNames;
 };
 
-class symbolObject
+class t_symbolObject
 {
 	public:
 		std::string						name;
 		uint8_t							type;
 };
 
-class wireObject : public symbolObject
+class t_wireObject : public t_symbolObject
 {
 	public:
-										wireObject(void);
+										t_wireObject(void);
 		QLine							line;
 };
 
-class pinObject : public symbolObject
+class t_pinObject : public t_symbolObject
 {
 	public:
-										pinObject(void);
+										t_pinObject(void);
 		QPoint							position;
 };
 

@@ -8,7 +8,7 @@ t_symbol::t_symbol(void)
 
 void t_symbol::addLine(QLine &line)
 {
-	wireObject tmpWire;
+	t_wireObject tmpWire;
 	tmpWire.line = line;
 	tmpWire.name = "p" + boost::lexical_cast<std::string>(wireNames);
 	++wireNames;
@@ -17,7 +17,7 @@ void t_symbol::addLine(QLine &line)
 
 void t_symbol::addPin(QPoint &pos)
 {
-	pinObject tmpPin;
+	t_pinObject tmpPin;
 	tmpPin.position = pos;
 	tmpPin.name = "w" + boost::lexical_cast<std::string>(pinNames);
 	++pinNames;
@@ -25,12 +25,12 @@ void t_symbol::addPin(QPoint &pos)
 }
 
 
-wireObject::wireObject(void)
+t_wireObject::t_wireObject(void)
 {
 	type = WIRE;
 }
 
-pinObject::pinObject(void)
+t_pinObject::t_pinObject(void)
 {
 	type = PIN;
 }

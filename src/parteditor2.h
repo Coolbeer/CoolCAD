@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #include "t_symbol.h"
+#include "t_infoWindow.h"
 
 #define MOVE 1
 #define LINE 2
@@ -30,6 +31,7 @@ class t_partEditor2 : public QWidget
 		t_symbol			*symbol;
 		uint16_t			translateMouse(uint16_t);
 		QLine				convertGrid(const QLine &input);
+		t_infoWindow		*infoWindow;
 	protected:
 		void				paintEvent(QPaintEvent *event);
 		void				mouseMoveEvent(QMouseEvent *event);
