@@ -3,5 +3,6 @@
      <file>images/arrows.png</file>
      <file>images/line.png</file>
      <file>images/pin.png</file>
+     <file>images/info.png</file>
  </qresource>
  </RCC>

@@ -35,15 +35,20 @@ void t_mainWindow::createToolBar(void)
 	toolBar = new QToolBar;
 	toolBar->setMovable(false);
 
-	moveAction = new QAction(QIcon(":/images/arrows.png"), "Move", this);
-	lineAction = new QAction(QIcon(":/images/line.png"), "Draw Line", this);
-	pinAction = new QAction(QIcon(":/images/pin.png"), "Draw a Pin", this);
-	moveAction->setCheckable(true);
-	lineAction->setCheckable(true);
-	pinAction->setCheckable(true);
+	infoAction = new QAction(QIcon(":/images/info.png"), "Info", this);
+	infoAction->setCheckable(true);
+	actionGroup->addAction(infoAction);
 
+	moveAction = new QAction(QIcon(":/images/arrows.png"), "Move", this);
+	moveAction->setCheckable(true);
 	actionGroup->addAction(moveAction);
+
+	lineAction = new QAction(QIcon(":/images/line.png"), "Draw Line", this);
+	lineAction->setCheckable(true);
 	actionGroup->addAction(lineAction);
+
+	pinAction = new QAction(QIcon(":/images/pin.png"), "Draw a Pin", this);
+	pinAction->setCheckable(true);
 	actionGroup->addAction(pinAction);
 
 	toolBar->addActions(actionGroup->actions());
@@ -68,6 +73,8 @@ void t_mainWindow::updateEditor(QAction *act)
 		pEditor->setToolBarButton(LINE);
 	else if(act->text() == "Draw a Pin")
 		pEditor->setToolBarButton(PIN);
+	else if(act->text() == "Info")
+		pEditor->setToolBarButton(INFO);
 }
 
 void t_mainWindow::keyPressEvent(QKeyEvent *event)

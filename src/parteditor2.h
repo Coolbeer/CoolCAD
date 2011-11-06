@@ -10,6 +10,7 @@
 #define LINE 2
 #define EDIT 4
 #define PIN  8
+#define INFO 16
 
 class t_partEditor2 : public QWidget
 {
