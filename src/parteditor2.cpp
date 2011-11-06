@@ -135,7 +135,7 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 		}
 		else if(mode == INFO)
 		{
-			infoWindow = new t_infoWindow(*symbol->wires.begin());
+			infoWindow = new t_infoWindow(*symbol->pins.begin());
 			infoWindow->show();
 		}
 		else if(mode & EDIT)
