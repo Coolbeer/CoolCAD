@@ -49,7 +49,7 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 		for(std::vector<QLine>::iterator iter = symbol->begin(); iter != symbol->end(); ++iter)
 			painter.drawLine(*iter);
 	}
-	if(mode == LINE && startDotX != 0 && startDotY != 0)
+	if((mode == LINE || mode & EDIT) && startDotX != 0 && startDotY != 0)
 	{
 		painter.drawLine(startDotX, startDotY, dotX, dotY);
 	}
@@ -75,6 +75,20 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 	{
 		if(mode == MOVE)
 		{
+			uint16_t tempX = roundNumber(event->x())/scale;
+			uint16_t tempY = roundNumber(event->y())/scale;
+
+			for(std::vector<QLine>::iterator iter = symbol->begin(); iter != symbol->end(); ++iter)
+			{
+				if((iter->x1() == tempX && iter->y1() == tempY) || (iter->x2() == tempX && iter->y2() == tempY))
+				{
+					startDotX = iter->x2();
+					startDotY = iter->y2();
+					symbol->removeLine(iter - symbol->begin());
+					mode |= EDIT;
+					break;
+				}
+			}
 		}
 		else if(mode == LINE)
 		{
@@ -82,16 +96,19 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 			{
 				startDotX = roundNumber(event->x())/scale;
 				startDotY = roundNumber(event->y())/scale;
-			}
-			else
-			{
-				QLine newLine;
-				newLine.setLine(startDotX, startDotY, roundNumber(event->x())/scale, roundNumber(event->y())/scale);
-				symbol->addLine(newLine);
-				startDotX = 0;
-				startDotY = 0;
+				mode |= EDIT;
 			}
 		}
+		else if(mode & EDIT)
+		{
+			QLine newLine;
+			newLine.setLine(startDotX, startDotY, roundNumber(event->x())/scale, roundNumber(event->y())/scale);
+			symbol->addLine(newLine);
+			startDotX = 0;
+			startDotY = 0;
+			mode &= ~EDIT;
+		}
+
 	}
 	event->accept();
 	repaint();

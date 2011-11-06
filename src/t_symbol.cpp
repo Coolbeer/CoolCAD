@@ -10,6 +10,11 @@ QLine t_symbol::getLine(uint16_t pos)
 	return internalLines.at(pos);
 }
 
+void t_symbol::removeLine(uint16_t pos)
+{
+	internalLines.erase(begin()+pos);
+}
+
 bool t_symbol::empty(void)
 {
 	return internalLines.empty();

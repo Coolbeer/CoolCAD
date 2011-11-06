@@ -6,8 +6,9 @@
 
 #include "t_symbol.h"
 
-#define MOVE 0
-#define LINE 1
+#define MOVE 1
+#define LINE 2
+#define EDIT 4
 
 class t_partEditor2 : public QWidget
 {
