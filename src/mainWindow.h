@@ -24,7 +24,7 @@ class t_mainWindow : public QMainWindow
 		QMdiSubWindow	*partEditorWindow;
 		t_partEditor2	*pEditor;
 		QToolBar		*toolBar;
-		QAction			*moveAction, *lineAction;
+		QAction			*moveAction, *lineAction, *pinAction;
 		QActionGroup	*actionGroup;
 		void			createMenu(void);
 		void			testObject(void);

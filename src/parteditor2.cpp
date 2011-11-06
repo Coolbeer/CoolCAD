@@ -164,6 +164,7 @@ uint16_t t_partEditor2::translateMouse(uint16_t num)
 {
 	return num/scale;
 }
+
 uint16_t t_partEditor2::roundNumber(uint16_t number)
 {
 	double tempVal = 50;
