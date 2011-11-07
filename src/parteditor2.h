@@ -9,9 +9,8 @@
 
 #define MOVE 1
 #define LINE 2
-#define EDIT 4
-#define PIN  8
-#define INFO 16
+#define PIN  4
+#define INFO 8
 
 class t_partEditor2 : public QWidget
 {
@@ -23,18 +22,20 @@ class t_partEditor2 : public QWidget
 		void				setToolBarButton(uint8_t number);
 	public slots:
 		void				drawWire(QPoint pos);
+		void				drawPin(QPoint pos);
+		void				moveItem(QPoint pos);
 	private:
 		void				drawGrid(void);
-		int16_t				dotX, dotY;
-		int16_t				startDotX, startDotY;
+		QLine				incompleteLine;
 		uint8_t				mode;
 		double				scale;
-		uint8_t				toolBarButton;
 		t_symbol			*symbol;
-		uint16_t			translateMouse(uint16_t);
 		t_infoWindow		*infoWindow;
+		bool				incompleteStage;
 	signals:
 		void				drawWireSignal(QPoint pos);
+		void				drawPinSignal(QPoint pos);
+		void				moveItemSignal(QPoint pos);
 	protected:
 		void				paintEvent(QPaintEvent *event);
 		void				mouseMoveEvent(QMouseEvent *event);

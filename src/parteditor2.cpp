@@ -10,15 +10,11 @@ t_partEditor2::t_partEditor2(void)
 	setMouseTracking(true);
 	mode = MOVE;
 	scale = 1;
-	startDotX = -10000;
-	startDotY = -10000;
+	incompleteStage = false;
 	symbol = new t_symbol;
 	connect(this, SIGNAL(drawWireSignal(QPoint)), this, SLOT(drawWire(QPoint)));
-}
-
-void t_partEditor2::drawGrid(void)
-{
-
+	connect(this, SIGNAL(drawPinSignal(QPoint)), this, SLOT(drawPin(QPoint)));
+	connect(this, SIGNAL(moveItemSignal(QPoint)), this, SLOT(moveItem(QPoint)));
 }
 
 void t_partEditor2::paintEvent(QPaintEvent *event)
@@ -66,16 +62,13 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 			}
 		}
 	}
-	if((mode == LINE || mode & EDIT) && startDotX != -10000 && startDotY != -10000)
+	if(incompleteStage)
 	{
 		dotPen.setWidth(5);
 		dotPen.setStyle(Qt::SolidLine);
 		dotPen.setColor(QColor(200,100,100));
 		painter.setPen(dotPen);
-		
-		QLine convLine;
-		convLine.setPoints(QPoint(500+(startDotX*50), 500+(startDotY*50)), QPoint(500+(dotX*50), 500+(dotY*50)));
-		painter.drawLine(convLine);
+		painter.drawLine(incompleteLine);
 	}
 
 	dotPen.setColor(QColor(100,100,100));
@@ -87,81 +80,33 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
 
 void t_partEditor2::mouseMoveEvent(QMouseEvent *event)
 {
-	dotX = (-500+roundNumber(translateMouse(event->x())))/50;
-	dotY = (-500+roundNumber(translateMouse(event->y())))/50;
+	incompleteLine.setP2(QPoint(roundNumber(event->x()/scale), roundNumber(event->y()/scale)));
 	repaint();
 	event->accept();
 }
 
 void t_partEditor2::mousePressEvent(QMouseEvent *event)
 {
-	std::vector<t_symbolObject*> itemList;
+//	std::vector<t_symbolObject*> itemList;
 	if(event->button() == Qt::LeftButton)
 	{
 		std::cout << event->x() << " - " << event->y() << "\n";
 		if(mode == MOVE)
 		{
-/*			int16_t tempX = (-500+roundNumber(translateMouse(event->x())))/50;
-			int16_t tempY = (-500+roundNumber(translateMouse(event->y())))/50;
-			std::cout << tempX << " = " << tempY << "\n";
-			for(uint8_t teller = 0; teller != symbol->items.size(); ++teller)
-			{
-
-				if((symbol->items.at(teller).  .line.x1() == tempX && symbol->items.line.y1() == tempY) || (symbol->items.line.x2() == tempX && symbol->items.line.y2() == tempY))
-				{
-					t_wireObject *test;
-					test = static_cast<t_wireObject*>(&symbol->items.at(teller));
-
-					itemList.push_back(*iter);
-					if(tempX == iter->line.x1())
-					{
-						startDotX = iter->line.x2();
-						startDotY = iter->line.y2();
-					}
-					else
-					{
-						startDotX = iter->line.x1();
-						startDotY = iter->line.y1();
-					}
-					symbol->wires.erase(iter);
-					mode |= EDIT;
-					break;
-
-				}
-				std::cout << itemList.size() << " <--\n";
-			}
-			*/
+			if(incompleteStage)
+				emit drawWireSignal(event->pos());
+			else
+				emit moveItemSignal(event->pos());
 		}
 		else if(mode == LINE)
-		{
 			emit drawWireSignal(event->pos());
-			if(startDotX == -10000 && startDotY == -10000)
-			{
-				startDotX = (-500+roundNumber(translateMouse(event->x())))/50;
-				startDotY = (-500+roundNumber(translateMouse(event->y())))/50;
-				mode |= EDIT;
-			}
-		}
 		else if(mode == PIN)
-		{
-			QPoint pinPoint((-500+roundNumber(translateMouse(event->x())))/50,(-500+roundNumber(translateMouse(event->y())))/50);
-			symbol->addPin(pinPoint);
-		}
+			emit drawPinSignal(event->pos());
 		else if(mode == INFO)
 		{
 //			infoWindow = new t_infoWindow(*symbol->pins.begin());
-			infoWindow->show();
+//			infoWindow->show();
 		}
-		else if(mode & EDIT)
-		{
-			QLine newLine;
-			newLine.setLine(startDotX, startDotY, dotX, dotY);
-			symbol->addLine(newLine);
-			startDotX = -10000;
-			startDotY = -10000;
-			mode &= ~EDIT;
-		}
-
 	}
 	event->accept();
 	repaint();
@@ -169,16 +114,56 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
 
 void t_partEditor2::drawWire(QPoint pos)
 {
-	std::cout << pos.x() << "---" << pos.y() << "\n";
+	pos.setX(roundNumber(pos.x()/scale));
+	pos.setY(roundNumber(pos.y()/scale));
+
+	if(incompleteStage == false)
+	{
+		incompleteLine.setP1(pos);
+		incompleteStage = true;;
+	}
+	else if(incompleteStage == true)
+	{
+		incompleteLine.setP2(pos);
+		symbol->addLine(incompleteLine);
+		incompleteStage = false;
+	}
+}
+
+void t_partEditor2::drawPin(QPoint pos)
+{
+	pos.setX(roundNumber(pos.x()/scale));
+	pos.setY(roundNumber(pos.y()/scale));
+	symbol->addPin(pos);
+}
+
+void t_partEditor2::moveItem(QPoint pos)
+{
+	pos.setX(roundNumber(pos.x()/scale));
+	pos.setY(roundNumber(pos.y()/scale));
+
+	for(std::vector<t_symbolObject*>::iterator iter = symbol->items.begin(); iter != symbol->items.end(); ++iter)
+	{
+		QLine tmpLine = (*iter)->getData();
+		if(tmpLine.p1() == pos)
+		{
+			incompleteLine.setP1(tmpLine.p2());;
+			incompleteStage = true;
+			symbol->items.erase(iter);
+			break;
+		}
+		else if(tmpLine.p2() == pos)
+		{
+			incompleteLine.setP1(tmpLine.p1());;
+			incompleteStage = true;
+			symbol->items.erase(iter);
+			break;
+		}
+	}
 }
 
 void t_partEditor2::cancel(void)
 {
-	if(mode == LINE)
-	{
-		startDotX = 0;
-		startDotY = 0;
-	}
 }
 
 void t_partEditor2::wheelEvent(QWheelEvent *event)
@@ -201,11 +186,6 @@ void t_partEditor2::wheelEvent(QWheelEvent *event)
 void t_partEditor2::setToolBarButton(uint8_t number)
 {
 	mode = number;
-}
-
-uint16_t t_partEditor2::translateMouse(uint16_t num)
-{
-	return num/scale;
 }
 
 uint16_t t_partEditor2::roundNumber(uint16_t number)

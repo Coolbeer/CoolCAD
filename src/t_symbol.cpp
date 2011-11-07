@@ -60,12 +60,10 @@ t_pinObject::~t_pinObject(void)
 
 QLine t_wireObject::getData(void)
 {
-	QLine returnValue(500+(data.x1()*50), 500+(data.y1()*50), 500+(data.x2()*50), 500+(data.y2()*50));
-	return returnValue;
+	return data;
 }
 
 QLine t_pinObject::getData(void)
 {
-	QPoint returnValue((500+(data.x()*50)), (500+(data.y()*50)));
-	return QLine(returnValue, returnValue);
+	return QLine(data, data);
 }

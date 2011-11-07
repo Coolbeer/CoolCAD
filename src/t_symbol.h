@@ -13,8 +13,8 @@ class t_symbolObject;
 
 #define MOVE 1
 #define WIRE 2
-#define EDIT 4
-#define PIN  8
+#define PIN  4
+#define INFO 8
 
 class t_symbol
 {
@@ -24,7 +24,6 @@ class t_symbol
 		void							addPin(QPoint &pos);
 		bool							empty(void);
 		std::vector<t_symbolObject*>	items;
-//		std::vector<t_pinObject>		pins;
 	private:
 		uint16_t						wireNames, pinNames;
 };
