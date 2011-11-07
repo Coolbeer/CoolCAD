@@ -145,19 +145,26 @@ void t_partEditor2::moveItem(QPoint pos)
 	for(std::vector<t_symbolObject*>::iterator iter = symbol->items.begin(); iter != symbol->items.end(); ++iter)
 	{
 		QLine tmpLine = (*iter)->getData();
-		if(tmpLine.p1() == pos)
+		if((*iter)->type == WIRE)
 		{
-			incompleteLine.setP1(tmpLine.p2());;
-			incompleteStage = true;
-			symbol->items.erase(iter);
-			break;
+			if(tmpLine.p1() == pos)
+			{
+				incompleteLine.setP1(tmpLine.p2());;
+				incompleteStage = true;
+				symbol->items.erase(iter);
+				break;
+			}
+			else if(tmpLine.p2() == pos)
+			{
+				incompleteLine.setP1(tmpLine.p1());;
+				incompleteStage = true;
+				symbol->items.erase(iter);
+				break;
+			}
 		}
-		else if(tmpLine.p2() == pos)
+		else if((*iter)->type == PIN)
 		{
-			incompleteLine.setP1(tmpLine.p1());;
-			incompleteStage = true;
-			symbol->items.erase(iter);
-			break;
+
 		}
 	}
 }
