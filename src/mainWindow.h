@@ -12,25 +12,25 @@
 
 class t_mainWindow : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
     public:
                         t_mainWindow();
-	public slots:
-		void			openPartEditor(void);
-		void			updateEditor(QAction *act);
+    public slots:
+        void            openPartEditor(void);
+        void            updateEditor(QAction *act);
     private:
-		QAction			*pEditorAction;
-		QMdiArea		*mdiArea;
-		QMdiSubWindow	*partEditorWindow;
-		t_partEditor2	*pEditor;
-		QToolBar		*toolBar;
-		QAction			*moveAction, *lineAction, *pinAction, *infoAction;
-		QActionGroup	*actionGroup;
-		void			createMenu(void);
-		void			testObject(void);
-		void			createToolBar(void);
-	protected:
-		void			keyPressEvent(QKeyEvent *event);
+        QAction         *pEditorAction;
+        QMdiArea        *mdiArea;
+        QMdiSubWindow   *partEditorWindow;
+        t_partEditor2   *pEditor;
+        QToolBar        *toolBar;
+        QAction         *moveAction, *lineAction, *pinAction, *infoAction;
+        QActionGroup    *actionGroup;
+        void            createMenu(void);
+        void            testObject(void);
+        void            createToolBar(void);
+    protected:
+        void            keyPressEvent(QKeyEvent *event);
 
 
 };

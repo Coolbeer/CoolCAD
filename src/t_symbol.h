@@ -18,43 +18,43 @@ class t_symbolObject;
 
 class t_symbol
 {
-	public:
-										t_symbol(void);
-		void							addLine(QLine &line);
-		void							addPin(QPoint &pos);
-		bool							empty(void);
-		std::vector<t_symbolObject*>	items;
-	private:
-		uint16_t						wireNames, pinNames;
+    public:
+                                        t_symbol(void);
+        void                            addLine(QLine &line);
+        void                            addPin(QPoint &pos);
+        bool                            empty(void);
+        std::vector<t_symbolObject*>    items;
+    private:
+        uint16_t                        wireNames, pinNames;
 };
 
 class t_symbolObject
 {
-	public:
-		std::string						name;
-		uint8_t							type;
-		bool							selected;
-		virtual							~t_symbolObject(void);
-		    							t_symbolObject(void);
-		virtual QLine					getData(void) = 0;
+    public:
+        std::string                     name;
+        uint8_t                         type;
+        bool                            selected;
+        virtual                         ~t_symbolObject(void);
+                                        t_symbolObject(void);
+        virtual QLine                   getData(void) = 0;
 };
 
 class t_wireObject : public t_symbolObject
 {
-	public:
-		virtual							~t_wireObject(void);
-										t_wireObject(void);
-		virtual QLine					getData(void);
-		QLine							data;
+    public:
+        virtual                         ~t_wireObject(void);
+                                        t_wireObject(void);
+        virtual QLine                   getData(void);
+        QLine                           data;
 };
 
 class t_pinObject : public t_symbolObject
 {
-	public:
-		virtual							~t_pinObject(void);
-										t_pinObject(void);
-		virtual QLine					getData(void);
-		QPoint							data;
+    public:
+        virtual                         ~t_pinObject(void);
+                                        t_pinObject(void);
+        virtual QLine                   getData(void);
+        QPoint                          data;
 };
 
 #endif

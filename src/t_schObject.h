@@ -9,7 +9,7 @@ class t_schObject : public QWidget, public QGraphicsItem
 {
     Q_OBJECT
     public:
-		using				QGraphicsItem::show;
+        using               QGraphicsItem::show;
                             t_schObject(void);
         QRectF              boundingRect() const;
         void                paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
