@@ -31,7 +31,7 @@ class t_partEditor2 : public QWidget
         double              scale;
         t_symbol            *symbol;
         t_infoWindow        *infoWindow;
-        bool                incompleteStage;
+        bool                incompleteStage, pinPlacement;
     signals:
         void                drawWireSignal(QPoint pos);
         void                drawPinSignal(QPoint pos);

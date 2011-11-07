@@ -11,6 +11,7 @@ t_partEditor2::t_partEditor2(void)
     mode = MOVE;
     scale = 1;
     incompleteStage = false;
+    pinPlacement = false;
     symbol = new t_symbol;
     connect(this, SIGNAL(drawWireSignal(QPoint)), this, SLOT(drawWire(QPoint)));
     connect(this, SIGNAL(drawPinSignal(QPoint)), this, SLOT(drawPin(QPoint)));
@@ -40,23 +41,24 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
     {
         for(uint8_t teller = 0;  teller != symbol->items.size(); ++teller)
         {
-/*          if(symbol->items.at(teller)->selected)
-                dotPen.setColor(QColor(200,10,10));
-            else
-                dotPen.setColor(QColor(200,100,100));
-*/
             if(symbol->items.at(teller)->type == WIRE)
             {
                 dotPen.setWidth(5);
                 dotPen.setStyle(Qt::SolidLine);
-                dotPen.setColor(QColor(200,100,100));
+                if(symbol->items.at(teller)->selected)
+                    dotPen.setColor(QColor(200,10,10));
+                else
+                    dotPen.setColor(QColor(200,100,100));
                 painter.setPen(dotPen);
                 painter.drawLine(symbol->items.at(teller)->getData());
             }
             else if(symbol->items.at(teller)->type == PIN)
             {
-                dotPen.setWidth(0);
-                dotPen.setColor(QColor(50,200,50));
+                dotPen.setWidth(1);
+                if(symbol->items.at(teller)->selected)
+                    dotPen.setColor(QColor(10,200,10));
+                else
+                    dotPen.setColor(QColor(100,200,100));
                 painter.setPen(dotPen);
                 painter.drawEllipse(symbol->items.at(teller)->getData().p1(), 10, 10);
             }
@@ -69,6 +71,13 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
         dotPen.setColor(QColor(200,100,100));
         painter.setPen(dotPen);
         painter.drawLine(incompleteLine);
+    }
+    else if(pinPlacement)
+    {
+        dotPen.setWidth(1);
+        dotPen.setColor(QColor(100,200,100));
+        painter.setPen(dotPen);
+        painter.drawEllipse(incompleteLine.p2(), 10, 10);
     }
 
     dotPen.setColor(QColor(100,100,100));
@@ -95,6 +104,8 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
         {
             if(incompleteStage)
                 emit drawWireSignal(event->pos());
+            else if(pinPlacement)
+                emit drawPinSignal(event->pos());
             else
                 emit moveItemSignal(event->pos());
         }
@@ -117,12 +128,12 @@ void t_partEditor2::drawWire(QPoint pos)
     pos.setX(roundNumber(pos.x()/scale));
     pos.setY(roundNumber(pos.y()/scale));
 
-    if(incompleteStage == false)
+    if(!incompleteStage)
     {
         incompleteLine.setP1(pos);
-        incompleteStage = true;;
+        incompleteStage = true;
     }
-    else if(incompleteStage == true)
+    else if(incompleteStage)
     {
         incompleteLine.setP2(pos);
         symbol->addLine(incompleteLine);
@@ -135,6 +146,9 @@ void t_partEditor2::drawPin(QPoint pos)
     pos.setX(roundNumber(pos.x()/scale));
     pos.setY(roundNumber(pos.y()/scale));
     symbol->addPin(pos);
+    
+    if(mode == MOVE)
+        pinPlacement = false;
 }
 
 void t_partEditor2::moveItem(QPoint pos)
@@ -164,7 +178,12 @@ void t_partEditor2::moveItem(QPoint pos)
         }
         else if((*iter)->type == PIN)
         {
-
+            if(tmpLine.p1() == pos)
+            {
+                pinPlacement = true;
+                symbol->items.erase(iter);
+                break;
+            }
         }
     }
 }
@@ -193,6 +212,10 @@ void t_partEditor2::wheelEvent(QWheelEvent *event)
 void t_partEditor2::setToolBarButton(uint8_t number)
 {
     mode = number;
+    if(mode == PIN)
+        pinPlacement = true;
+    else
+        pinPlacement = false;
 }
 
 uint16_t t_partEditor2::roundNumber(uint16_t number)
