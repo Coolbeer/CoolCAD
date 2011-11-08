@@ -16,6 +16,9 @@ t_mainWindow::t_mainWindow(void)
 
     QResource::registerResource("resource.rcc");
 //  mdiArea->setViewMode(QMdiArea::TabbedView); //Enable this when we have more than one window
+
+    connect(pEditorAction, SIGNAL(triggered()), this, SLOT(openPartEditor()));
+    connect(actionGroup, SIGNAL(triggered(QAction*)), pEditor, SLOT(buttonClicked(QAction*)));
 }
 
 void t_mainWindow::createMenu(void)
@@ -25,8 +28,6 @@ void t_mainWindow::createMenu(void)
     toolsMenu = menuB->addMenu("Tools");
     pEditorAction = toolsMenu->addAction("Part Editor");
     setMenuBar(menuB);
-
-    connect(pEditorAction, SIGNAL(triggered()), this, SLOT(openPartEditor()));
 }
 
 void t_mainWindow::createToolBar(void)
@@ -53,28 +54,13 @@ void t_mainWindow::createToolBar(void)
 
     toolBar->addActions(actionGroup->actions());
     moveAction->setChecked(true);
-    pEditor->setToolBarButton(MOVE);
     addToolBar(Qt::LeftToolBarArea, toolBar);
-
-    connect(actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(updateEditor(QAction*)));
 }
 
 void t_mainWindow::openPartEditor(void)
 {
     partEditorWindow = mdiArea->addSubWindow(pEditor, Qt::Window);
     partEditorWindow->showMaximized();
-}
-
-void t_mainWindow::updateEditor(QAction *act)
-{
-    if(act->text() == "Move")
-        pEditor->setToolBarButton(MOVE);
-    else if(act->text() == "Draw Line")
-        pEditor->setToolBarButton(LINE);
-    else if(act->text() == "Draw a Pin")
-        pEditor->setToolBarButton(PIN);
-    else if(act->text() == "Info")
-        pEditor->setToolBarButton(INFO);
 }
 
 void t_mainWindow::keyPressEvent(QKeyEvent *event)

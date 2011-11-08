@@ -2,6 +2,7 @@
 
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
+#include <QtGui/QAction>
 #include <cstdint>
 #include <iostream>
 
@@ -16,6 +17,23 @@ t_partEditor2::t_partEditor2(void)
     connect(this, SIGNAL(drawWireSignal(QPoint)), this, SLOT(drawWire(QPoint)));
     connect(this, SIGNAL(drawPinSignal(QPoint)), this, SLOT(drawPin(QPoint)));
     connect(this, SIGNAL(moveItemSignal(QPoint)), this, SLOT(moveItem(QPoint)));
+}
+
+void t_partEditor2::buttonClicked(QAction *act)
+{
+    if(act->text() == "Move")
+        mode = MOVE;
+    else if(act->text() == "Draw Line")
+        mode = LINE;
+    else if(act->text() == "Draw a Pin")
+        mode = PIN;
+    else if(act->text() == "Info")
+        mode = INFO;
+
+    if(mode == PIN)
+        pinPlacement = true;
+    else
+        pinPlacement = false;
 }
 
 void t_partEditor2::paintEvent(QPaintEvent *event)
@@ -207,15 +225,6 @@ void t_partEditor2::wheelEvent(QWheelEvent *event)
     std::cout << scale << "\n";
     event->accept();
     repaint();
-}
-
-void t_partEditor2::setToolBarButton(uint8_t number)
-{
-    mode = number;
-    if(mode == PIN)
-        pinPlacement = true;
-    else
-        pinPlacement = false;
 }
 
 uint16_t t_partEditor2::roundNumber(uint16_t number)

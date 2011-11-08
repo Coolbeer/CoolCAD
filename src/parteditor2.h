@@ -19,11 +19,11 @@ class t_partEditor2 : public QWidget
                             t_partEditor2(void);
         uint16_t            roundNumber(uint16_t number);
         void                cancel(void);
-        void                setToolBarButton(uint8_t number);
     public slots:
         void                drawWire(QPoint pos);
         void                drawPin(QPoint pos);
         void                moveItem(QPoint pos);
+        void                buttonClicked(QAction *act);
     private:
         void                drawGrid(void);
         QLine               incompleteLine;

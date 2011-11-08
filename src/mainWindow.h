@@ -17,7 +17,6 @@ class t_mainWindow : public QMainWindow
                         t_mainWindow();
     public slots:
         void            openPartEditor(void);
-        void            updateEditor(QAction *act);
     private:
         QAction         *pEditorAction;
         QMdiArea        *mdiArea;
@@ -31,8 +30,6 @@ class t_mainWindow : public QMainWindow
         void            createToolBar(void);
     protected:
         void            keyPressEvent(QKeyEvent *event);
-
-
 };
 
 #endif
