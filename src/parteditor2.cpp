@@ -34,6 +34,7 @@ void t_partEditor2::buttonClicked(QAction *act)
         pinPlacement = true;
     else
         pinPlacement = false;
+    incompleteStage = false;
 }
 
 void t_partEditor2::paintEvent(QPaintEvent *event)
