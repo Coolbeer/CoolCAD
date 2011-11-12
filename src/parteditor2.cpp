@@ -1,10 +1,13 @@
-#include "parteditor2.moc"
+﻿#include "parteditor2.moc"
 
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QAction>
 #include <cstdint>
 #include <iostream>
+#include <math.h>
+
+#include "pwanmath.h"
 
 t_partEditor2::t_partEditor2(void)
 {
@@ -142,6 +145,29 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
     repaint();
 }
 
+double t_partEditor2::hitTest(const QPoint &A, const QPoint &B, const QPoint &C)
+{
+	std::vector<uint32_t> vA, vB, vC;
+	vA.push_back(A.x());
+	vA.push_back(A.y());
+
+	vB.push_back(B.x());
+	vB.push_back(B.y());
+
+	vC.push_back(C.x());
+	vC.push_back(C.y());
+
+	double dist = pwan::math::cross(vA, vB, vC) / pwan::math::distance(vA, vB);
+
+	int dot1 = pwan::math::dot(vA, vB, vC);
+    if(dot1 > 0)
+		return pwan::math::distance(vB, vC);
+    int dot2 = pwan::math::dot(vB, vA, vC);
+    if(dot2 > 0)
+		return pwan::math::distance(vA, vC);
+    return abs(dist);
+}
+
 void t_partEditor2::drawWire(QPoint pos)
 {
     pos.setX(roundNumber(pos.x()/scale));
@@ -174,12 +200,12 @@ void t_partEditor2::moveItem(QPoint pos)
 {
     pos.setX(roundNumber(pos.x()/scale));
     pos.setY(roundNumber(pos.y()/scale));
-
     for(std::vector<t_symbolObject*>::iterator iter = symbol->items.begin(); iter != symbol->items.end(); ++iter)
     {
         QLine tmpLine = (*iter)->getData();
         if((*iter)->type == WIRE)
         {
+			std::cout << hitTest(tmpLine.p1(), tmpLine.p2(), pos) << "t\n";
             if(tmpLine.p1() == pos)
             {
                 incompleteLine.setP1(tmpLine.p2());;

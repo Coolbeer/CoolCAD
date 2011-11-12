@@ -32,6 +32,7 @@ class t_partEditor2 : public QWidget
         t_symbol            *symbol;
         t_infoWindow        *infoWindow;
         bool                incompleteStage, pinPlacement;
+        double              hitTest(const QPoint &A, const QPoint &B, const QPoint &C);
     signals:
         void                drawWireSignal(QPoint pos);
         void                drawPinSignal(QPoint pos);
