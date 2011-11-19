@@ -3,6 +3,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QAction>
+#include <QTGui/QFileDialog>
 #include <cstdint>
 #include <iostream>
 #include <math.h>
@@ -17,9 +18,9 @@ t_libraryEditor::t_libraryEditor(void)
     incompleteStage = false;
     pinPlacement = false;
     symbol = new t_symbol;
-	selected = symbol->items.end();
+    selected = symbol->items.end();
 
-	connect(this, SIGNAL(drawWireSignal(QPoint)), this, SLOT(drawWire(QPoint)));
+    connect(this, SIGNAL(drawWireSignal(QPoint)), this, SLOT(drawWire(QPoint)));
     connect(this, SIGNAL(drawPinSignal(QPoint)), this, SLOT(drawPin(QPoint)));
     connect(this, SIGNAL(moveItemSignal(QPoint)), this, SLOT(moveItem(QPoint)));
 }
@@ -144,50 +145,50 @@ void t_libraryEditor::mousePressEvent(QMouseEvent *event)
         }
 
     }
-	else if(event->button() == Qt::RightButton)
-	{
-	    for(std::vector<t_symbolObject*>::iterator iter = symbol->items.begin(); iter != symbol->items.end(); ++iter)
-		{
-			if((*iter)->selected)
-			{
-				(*iter)->selected = false;
-				if(iter+1 != symbol->items.end())
-				{
-					(*(++iter))->selected = true;
-					break;
-				}
-				else
-				{
-					symbol->items.at(0)->selected = true;
-					break;
-				}
-			}
-		}
-	}
+    else if(event->button() == Qt::RightButton)
+    {
+        for(std::vector<t_symbolObject*>::iterator iter = symbol->items.begin(); iter != symbol->items.end(); ++iter)
+        {
+            if((*iter)->selected)
+            {
+                (*iter)->selected = false;
+                if(iter+1 != symbol->items.end())
+                {
+                    (*(++iter))->selected = true;
+                    break;
+                }
+                else
+                {
+                    symbol->items.at(0)->selected = true;
+                    break;
+                }
+            }
+        }
+    }
     event->accept();
     repaint();
 }
 
 double t_libraryEditor::hitTest(const QPoint &A, const QPoint &B, const QPoint &C)
 {
-	std::vector<uint32_t> vA, vB, vC;
-	vA.push_back(A.x());
-	vA.push_back(A.y());
+    std::vector<uint32_t> vA, vB, vC;
+    vA.push_back(A.x());
+    vA.push_back(A.y());
 
-	vB.push_back(B.x());
-	vB.push_back(B.y());
+    vB.push_back(B.x());
+    vB.push_back(B.y());
 
-	vC.push_back(C.x());
-	vC.push_back(C.y());
+    vC.push_back(C.x());
+    vC.push_back(C.y());
 
-	double dist = pwan::math::cross(vA, vB, vC) / pwan::math::distance(vA, vB);
+    double dist = pwan::math::cross(vA, vB, vC) / pwan::math::distance(vA, vB);
 
-	int dot1 = pwan::math::dot(vA, vB, vC);
+    int dot1 = pwan::math::dot(vA, vB, vC);
     if(dot1 > 0)
-		return pwan::math::distance(vB, vC);
+        return pwan::math::distance(vB, vC);
     int dot2 = pwan::math::dot(vB, vA, vC);
     if(dot2 > 0)
-		return pwan::math::distance(vA, vC);
+        return pwan::math::distance(vA, vC);
     return abs(dist);
 }
 
@@ -221,75 +222,75 @@ void t_libraryEditor::drawPin(QPoint pos)
 
 void t_libraryEditor::moveItem(QPoint pos)
 {
-	uint8_t selectedPos = 0;
-	bool selPos = false;
+    uint8_t selectedPos = 0;
+    bool selPos = false;
     pos.setX(roundNumber(pos.x()/scale));
     pos.setY(roundNumber(pos.y()/scale));
 
-	std::vector<std::vector<t_symbolObject*>::iterator> closeItems;
+    std::vector<std::vector<t_symbolObject*>::iterator> closeItems;
     for(std::vector<t_symbolObject*>::iterator iter = symbol->items.begin(); iter != symbol->items.end(); ++iter)
     {
-		QLine tmpLine = (*iter)->getData();
-		if((*iter)->type == WIRE)
-		{
-			if(hitTest(tmpLine.p1(), tmpLine.p2(), pos) < 35)
-			{
-				closeItems.push_back(iter);
-				if((*iter)->selected)
-				{
-					selPos = true;
-					selectedPos = closeItems.size()-1;
-				}
-			}
-		}
-		else if((*iter)->type == PIN)
-		{
-			if(pos == tmpLine.p1())
-			{
-				closeItems.push_back(iter);
-				if((*iter)->selected)
-				{
-					selPos = true;
-					selectedPos = closeItems.size()-1;
-				}
-			}
-		}
+        QLine tmpLine = (*iter)->getData();
+        if((*iter)->type == WIRE)
+        {
+            if(hitTest(tmpLine.p1(), tmpLine.p2(), pos) < 35)
+            {
+                closeItems.push_back(iter);
+                if((*iter)->selected)
+                {
+                    selPos = true;
+                    selectedPos = closeItems.size()-1;
+                }
+            }
+        }
+        else if((*iter)->type == PIN)
+        {
+            if(pos == tmpLine.p1())
+            {
+                closeItems.push_back(iter);
+                if((*iter)->selected)
+                {
+                    selPos = true;
+                    selectedPos = closeItems.size()-1;
+                }
+            }
+        }
     }
 
-	if(closeItems.empty())
-		return;
-	else if(closeItems.size() == 1 || selPos == true)
-	{
-		QLine tmLine = (*closeItems.at(selectedPos))->getData();
-		if((*closeItems.at(selectedPos))->type == WIRE)
-		{
-			if(tmLine.p1() == pos)
-			{
-				incompleteLine.setP1(tmLine.p2());;
-				incompleteStage = true;
-				symbol->items.erase(closeItems.at(selectedPos));
-			}
-			else if(tmLine.p2() == pos)
-			{
-				incompleteLine.setP1(tmLine.p1());;
-				incompleteStage = true;
-				symbol->items.erase(closeItems.at(selectedPos));
-			}
-		}
-		else if((*closeItems.at(0))->type == PIN)
-		{
-			if(tmLine.p1() == pos)
-			{
-				pinPlacement = true;
-				symbol->items.erase(closeItems.at(selectedPos));
-			}
-		}
-	}
-	else
-	{
-		selectPin = true;
-		(*closeItems.at(0))->selected = true;
-	}
+    if(closeItems.empty())
+        return;
+    else if(closeItems.size() == 1 || selPos == true)
+    {
+        QLine tmLine = (*closeItems.at(selectedPos))->getData();
+        if((*closeItems.at(selectedPos))->type == WIRE)
+        {
+            if(tmLine.p1() == pos)
+            {
+                incompleteLine.setP1(tmLine.p2());;
+                incompleteStage = true;
+                symbol->items.erase(closeItems.at(selectedPos));
+            }
+            else if(tmLine.p2() == pos)
+            {
+                incompleteLine.setP1(tmLine.p1());;
+                incompleteStage = true;
+                symbol->items.erase(closeItems.at(selectedPos));
+            }
+        }
+        else if((*closeItems.at(0))->type == PIN)
+        {
+            if(tmLine.p1() == pos)
+            {
+                pinPlacement = true;
+                symbol->items.erase(closeItems.at(selectedPos));
+            }
+        }
+    }
+    else
+    {
+        selectPin = true;
+        (*closeItems.at(0))->selected = true;
+    }
 }
 
 void t_libraryEditor::cancel(void)
@@ -311,6 +312,12 @@ void t_libraryEditor::wheelEvent(QWheelEvent *event)
     std::cout << scale << "\n";
     event->accept();
     repaint();
+}
+
+void t_libraryEditor::openLib(void)
+{
+    QString fileName = QFileDialog::getOpenFileName(this, "Open Library", "", "Kicad Library (*.lib)");
+    std::cout << fileName.toStdString() << "\n";
 }
 
 uint16_t t_libraryEditor::roundNumber(uint16_t number)

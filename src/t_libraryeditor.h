@@ -25,6 +25,7 @@ class t_libraryEditor : public QWidget
         void                                        drawPin(QPoint pos);
         void                                        moveItem(QPoint pos);
         void                                        buttonClicked(QAction *act);
+        void                                        openLib(void);
     private:
         void                                        drawGrid(void);
         QLine                                       incompleteLine;

@@ -18,6 +18,7 @@ t_mainWindow::t_mainWindow(void)
 //  mdiArea->setViewMode(QMdiArea::TabbedView); //Enable this when we have more than one window
 
     connect(pEditorAction, SIGNAL(triggered()), this, SLOT(openPartEditor()));
+    connect(openLibraryAction, SIGNAL(triggered()), pEditor, SLOT(openLib()));
     connect(actionGroup, SIGNAL(triggered(QAction*)), pEditor, SLOT(buttonClicked(QAction*)));
 }
 
@@ -32,7 +33,6 @@ void t_mainWindow::createMenu(void)
     openMenu = fileMenu->addMenu("&Open");
     pEditorAction = newMenu->addAction("&Library");
     openLibraryAction = openMenu->addAction("&Library");
-
     setMenuBar(menuB);
 }
 
