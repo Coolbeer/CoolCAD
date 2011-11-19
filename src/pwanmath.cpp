@@ -1,5 +1,7 @@
 #include "pwanmath.h"
 
+#include <math.h>
+
 double pwan::math::distance(const std::vector<uint32_t> &A, const std::vector<uint32_t> &B)
 {
     int dx = A.at(0) - B.at(0);

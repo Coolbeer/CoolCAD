@@ -8,7 +8,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QActionGroup>
 
-#include "parteditor2.h"
+#include "t_libraryeditor.h"
 
 class t_mainWindow : public QMainWindow
 {

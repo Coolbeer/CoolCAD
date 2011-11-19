@@ -46,7 +46,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_cooleda_OBJECTS = main.$(OBJEXT) mainWindow.$(OBJEXT) \
-	t_schObject.$(OBJEXT) parteditor2.$(OBJEXT) t_symbol.$(OBJEXT) \
+	pwanmath.$(OBJEXT) t_schObject.$(OBJEXT) \
+	t_libraryeditor.$(OBJEXT) t_symbol.$(OBJEXT) \
 	t_infoWindow.$(OBJEXT)
 cooleda_OBJECTS = $(am_cooleda_OBJECTS)
 cooleda_LDADD = $(LDADD)
@@ -157,8 +158,9 @@ top_srcdir = @top_srcdir@
 cooleda_SOURCES = \
 	main.cpp \
 	mainWindow.cpp \
+	pwanmath.cpp \
 	t_schObject.cpp \
-	parteditor2.cpp \
+	t_libraryeditor.cpp \
 	t_symbol.cpp \
 	t_infoWindow.cpp
 
@@ -248,8 +250,9 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainWindow.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parteditor2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pwanmath.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_infoWindow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_libraryeditor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_schObject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_symbol.Po@am__quote@
 
@@ -473,8 +476,8 @@ mainWindow.cpp:mainWindow.moc
 t_schObject.moc:t_schObject.h
 t_schObject.cpp:t_schObject.moc
 
-parteditor2.moc:parteditor2.h
-parteditor2.cpp:parteditor2.moc
+t_libraryeditor.moc:t_libraryeditor.h
+t_libraryeditor.cpp:t_libraryeditor.moc
 
 .h.moc:
 	moc $< -o$@

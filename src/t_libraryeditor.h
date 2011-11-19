@@ -1,5 +1,5 @@
-#ifndef LIBRARYEDITOR2_H
-#define LIBRARYEDITOR2_H
+#ifndef T_LIBRARYEDITOR2_H
+#define T_LIBRARYEDITOR2_H
 
 #include <QtGui/QWidget>
 #include <cstdint>

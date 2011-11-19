@@ -2,8 +2,9 @@ bin_PROGRAMS = cooleda
 cooleda_SOURCES = \
 	main.cpp \
 	mainWindow.cpp \
+	pwanmath.cpp \
 	t_schObject.cpp \
-	parteditor2.cpp \
+	t_libraryeditor.cpp \
 	t_symbol.cpp \
 	t_infoWindow.cpp
 
@@ -13,8 +14,8 @@ mainWindow.cpp:mainWindow.moc
 t_schObject.moc:t_schObject.h
 t_schObject.cpp:t_schObject.moc
 
-parteditor2.moc:parteditor2.h
-parteditor2.cpp:parteditor2.moc
+t_libraryeditor.moc:t_libraryeditor.h
+t_libraryeditor.cpp:t_libraryeditor.moc
 
 
 .h.moc:
