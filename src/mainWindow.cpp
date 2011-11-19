@@ -9,7 +9,7 @@ t_mainWindow::t_mainWindow(void)
 {
     mdiArea = new QMdiArea;
     setCentralWidget(mdiArea);
-    pEditor = new t_partEditor2;
+    pEditor = new t_libraryEditor;
 
     createMenu();
     createToolBar();

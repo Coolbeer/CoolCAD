@@ -9,7 +9,7 @@
 
 #include "pwanmath.h"
 
-t_partEditor2::t_partEditor2(void)
+t_libraryEditor::t_libraryEditor(void)
 {
     setMouseTracking(true);
     mode = MOVE;
@@ -24,7 +24,7 @@ t_partEditor2::t_partEditor2(void)
     connect(this, SIGNAL(moveItemSignal(QPoint)), this, SLOT(moveItem(QPoint)));
 }
 
-void t_partEditor2::buttonClicked(QAction *act)
+void t_libraryEditor::buttonClicked(QAction *act)
 {
     if(act->text() == "Move")
         mode = MOVE;
@@ -42,7 +42,7 @@ void t_partEditor2::buttonClicked(QAction *act)
     incompleteStage = false;
 }
 
-void t_partEditor2::paintEvent(QPaintEvent *event)
+void t_libraryEditor::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     QPen dotPen;
@@ -111,14 +111,14 @@ void t_partEditor2::paintEvent(QPaintEvent *event)
     painter.drawLine(490,500,510,500);
 }
 
-void t_partEditor2::mouseMoveEvent(QMouseEvent *event)
+void t_libraryEditor::mouseMoveEvent(QMouseEvent *event)
 {
     incompleteLine.setP2(QPoint(roundNumber(event->x()/scale), roundNumber(event->y()/scale)));
     repaint();
     event->accept();
 }
 
-void t_partEditor2::mousePressEvent(QMouseEvent *event)
+void t_libraryEditor::mousePressEvent(QMouseEvent *event)
 {
 //  std::vector<t_symbolObject*> itemList;
     if(event->button() == Qt::LeftButton)
@@ -168,7 +168,7 @@ void t_partEditor2::mousePressEvent(QMouseEvent *event)
     repaint();
 }
 
-double t_partEditor2::hitTest(const QPoint &A, const QPoint &B, const QPoint &C)
+double t_libraryEditor::hitTest(const QPoint &A, const QPoint &B, const QPoint &C)
 {
     std::vector<uint32_t> vA, vB, vC;
     vA.push_back(A.x());
@@ -191,7 +191,7 @@ double t_partEditor2::hitTest(const QPoint &A, const QPoint &B, const QPoint &C)
     return abs(dist);
 }
 
-void t_partEditor2::drawWire(QPoint pos)
+void t_libraryEditor::drawWire(QPoint pos)
 {
     pos.setX(roundNumber(pos.x()/scale));
     pos.setY(roundNumber(pos.y()/scale));
@@ -209,7 +209,7 @@ void t_partEditor2::drawWire(QPoint pos)
     }
 }
 
-void t_partEditor2::drawPin(QPoint pos)
+void t_libraryEditor::drawPin(QPoint pos)
 {
     pos.setX(roundNumber(pos.x()/scale));
     pos.setY(roundNumber(pos.y()/scale));
@@ -219,7 +219,7 @@ void t_partEditor2::drawPin(QPoint pos)
         pinPlacement = false;
 }
 
-void t_partEditor2::moveItem(QPoint pos)
+void t_libraryEditor::moveItem(QPoint pos)
 {
     uint8_t selectedPos = 0;
     bool selPos = false;
@@ -292,11 +292,11 @@ void t_partEditor2::moveItem(QPoint pos)
     }
 }
 
-void t_partEditor2::cancel(void)
+void t_libraryEditor::cancel(void)
 {
 }
 
-void t_partEditor2::wheelEvent(QWheelEvent *event)
+void t_libraryEditor::wheelEvent(QWheelEvent *event)
 {
     int numDegrees = event->delta() / 8;
     int numSteps = numDegrees / 15;
@@ -313,7 +313,7 @@ void t_partEditor2::wheelEvent(QWheelEvent *event)
     repaint();
 }
 
-uint16_t t_partEditor2::roundNumber(uint16_t number)
+uint16_t t_libraryEditor::roundNumber(uint16_t number)
 {
     double tempVal = 50;
     uint16_t returnValue = number / tempVal;

@@ -21,7 +21,7 @@ class t_mainWindow : public QMainWindow
         QAction         *pEditorAction, *openLibraryAction;
         QMdiArea        *mdiArea;
         QMdiSubWindow   *partEditorWindow;
-        t_partEditor2   *pEditor;
+        t_libraryEditor   *pEditor;
         QToolBar        *toolBar;
         QAction         *moveAction, *lineAction, *pinAction, *infoAction;
         QActionGroup    *actionGroup;

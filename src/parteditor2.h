@@ -1,5 +1,5 @@
-#ifndef PARTEDITOR2_H
-#define PARTEDITOR2_H
+#ifndef LIBRARYEDITOR2_H
+#define LIBRARYEDITOR2_H
 
 #include <QtGui/QWidget>
 #include <cstdint>
@@ -13,11 +13,11 @@
 #define PIN  4
 #define INFO 8
 
-class t_partEditor2 : public QWidget
+class t_libraryEditor : public QWidget
 {
     Q_OBJECT
     public:
-                                                    t_partEditor2(void);
+                                                    t_libraryEditor(void);
         uint16_t                                    roundNumber(uint16_t number);
         void                                        cancel(void);
     public slots:
