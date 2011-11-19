@@ -24,9 +24,15 @@ t_mainWindow::t_mainWindow(void)
 void t_mainWindow::createMenu(void)
 {
     QMenuBar *menuB = new QMenuBar;
-    QMenu *toolsMenu;
-    toolsMenu = menuB->addMenu("Tools");
-    pEditorAction = toolsMenu->addAction("Part Editor");
+    QMenu *fileMenu;
+    QMenu *newMenu;
+    QMenu *openMenu;
+    fileMenu = menuB->addMenu("&File");
+    newMenu = fileMenu->addMenu("&New");
+    openMenu = fileMenu->addMenu("&Open");
+    pEditorAction = newMenu->addAction("&Library");
+    openLibraryAction = openMenu->addAction("&Library");
+
     setMenuBar(menuB);
 }
 

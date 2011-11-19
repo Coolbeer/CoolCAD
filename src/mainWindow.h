@@ -18,7 +18,7 @@ class t_mainWindow : public QMainWindow
     public slots:
         void            openPartEditor(void);
     private:
-        QAction         *pEditorAction;
+        QAction         *pEditorAction, *openLibraryAction;
         QMdiArea        *mdiArea;
         QMdiSubWindow   *partEditorWindow;
         t_partEditor2   *pEditor;
