@@ -3,7 +3,7 @@ cooleda_SOURCES = \
 	main.cpp \
 	mainWindow.cpp \
 	pwanmath.cpp \
-	t_schObject.cpp \
+	pwanstrings.cpp \
 	t_libraryeditor.cpp \
 	t_symbol.cpp \
 	t_infoWindow.cpp

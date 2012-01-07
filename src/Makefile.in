@@ -46,7 +46,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_cooleda_OBJECTS = main.$(OBJEXT) mainWindow.$(OBJEXT) \
-	pwanmath.$(OBJEXT) t_schObject.$(OBJEXT) \
+	pwanmath.$(OBJEXT) pwanstrings.$(OBJEXT) \
 	t_libraryeditor.$(OBJEXT) t_symbol.$(OBJEXT) \
 	t_infoWindow.$(OBJEXT)
 cooleda_OBJECTS = $(am_cooleda_OBJECTS)
@@ -159,7 +159,7 @@ cooleda_SOURCES = \
 	main.cpp \
 	mainWindow.cpp \
 	pwanmath.cpp \
-	t_schObject.cpp \
+	pwanstrings.cpp \
 	t_libraryeditor.cpp \
 	t_symbol.cpp \
 	t_infoWindow.cpp
@@ -251,9 +251,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainWindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pwanmath.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pwanstrings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_infoWindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_libraryeditor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_schObject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_symbol.Po@am__quote@
 
 .cpp.o:

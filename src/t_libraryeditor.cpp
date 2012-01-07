@@ -48,6 +48,8 @@ void t_libraryEditor::buttonClicked(QAction *act)
 void t_libraryEditor::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
+	QBrush polyBrush;
+	polyBrush.setColor(g_color);
     QPen dotPen;
     uint8_t minThickness = 4;
 	painter.setRenderHint(QPainter::Antialiasing, true);
@@ -74,10 +76,31 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
             if(currentComponent->items.at(t)->type == 'P')
             {
                 t_PolylineObject *ob = static_cast<t_PolylineObject*>(currentComponent->items.at(t));
+				QPolygon poly;
+				for(uint16_t i = 0; i != ob->points.size(); ++i)
+				{
+					poly << QPoint(ob->points.at(i).x, ob->points.at(i).y);
+				}
+				if(ob->thickness < minThickness)
+					ob->thickness = minThickness;
+				dotPen.setWidth(ob->thickness);
+				dotPen.setStyle(Qt::SolidLine);
+				dotPen.setColor(g_color);
+				painter.setPen(dotPen);
+				if(ob->fill == 'F')
+				{
+					painter.setBrush(QBrush(g_color,Qt::SolidPattern));
+					painter.drawPolygon(poly,Qt::WindingFill);
+				}
+				else
+				{
+					painter.setBrush(Qt::NoBrush);
+					painter.drawPolyline(poly);
+				}
+/*				int16_t firstx = ob->points.at(0).x;
+				int16_t firsty = ob->points.at(0).y;
                 for(uint16_t i = 0; i != ob->points.size()-1; ++i)
                 {
-                    //std::cout << ob->points.at(i).x << "\n";
-                    //std::cout << ob->points.at(i).y << "\n";
                     if(ob->thickness < minThickness)
                         ob->thickness = minThickness;
                     dotPen.setWidth(ob->thickness);
@@ -86,6 +109,8 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
                     painter.setPen(dotPen);
                     painter.drawLine(ob->points.at(i).x, ob->points.at(i).y, ob->points.at(i+1).x, ob->points.at(i+1).y);
                 }
+                //painter.drawLine(ob->points.at(ob->points.size()-1).x, ob->points.at(ob->points.size()-1).y, firstx, firsty);
+*/
             }
             else if(currentComponent->items.at(t)->type == 'C')
             {
@@ -96,7 +121,9 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
                 dotPen.setStyle(Qt::SolidLine);
                 dotPen.setColor(g_color);
                 painter.setPen(dotPen);
-                painter.drawEllipse(QPoint(ob->posx, ob->posy), ob->radius, ob->radius);
+				painter.setBrush(Qt::NoBrush);
+
+				painter.drawEllipse(QPoint(ob->posx, ob->posy), ob->radius, ob->radius);
                 //std::cout << ob->posx << "-" << ob->posy << "-" << ob->radius << "\n";
             }
             else if(currentComponent->items.at(t)->type == 'X')
@@ -106,7 +133,9 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
                 dotPen.setStyle(Qt::SolidLine);
                 dotPen.setColor(g_color);
                 painter.setPen(dotPen);
-                int16_t tox, toy;
+				painter.setBrush(Qt::NoBrush);
+				int16_t tox, toy;
+				tox = toy = 0;
                 if(ob->direction == 'U')
                 {
                     tox = ob->posx;
@@ -207,6 +236,7 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
     painter.setPen(dotPen);
     painter.drawLine(0,-10,0,10);
     painter.drawLine(-10,0,10,0);
+	event->accept();
 }
 
 void t_libraryEditor::mouseMoveEvent(QMouseEvent *event)
@@ -320,7 +350,6 @@ void t_libraryEditor::drawPin(QPoint pos)
 
 void t_libraryEditor::moveItem(QPoint pos)
 {
-    uint8_t selectedPos = 0;
     bool selPos = false;
     pos.setX(roundNumber(pos.x()/scale));
     pos.setY(roundNumber(pos.y()/scale));
