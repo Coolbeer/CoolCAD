@@ -3,7 +3,8 @@
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QAction>
-#include <QTGui/QFileDialog>
+#include <QtGui/QFileDialog>
+#include <boost/algorithm/string.hpp>
 #include <cstdint>
 #include <iostream>
 #include <math.h>
@@ -14,11 +15,12 @@ t_libraryEditor::t_libraryEditor(void)
 {
     setMouseTracking(true);
     mode = MOVE;
-    scale = 1;
+    scale = 0.5;
     incompleteStage = false;
     pinPlacement = false;
-    symbol = new t_symbol;
-    selected = symbol->items.end();
+    haveComp = false;
+    g_color = QColor(200, 100, 100);
+    p_color = QColor(100, 200, 100);
 
     connect(this, SIGNAL(drawWireSignal(QPoint)), this, SLOT(drawWire(QPoint)));
     connect(this, SIGNAL(drawPinSignal(QPoint)), this, SLOT(drawPin(QPoint)));
@@ -47,7 +49,10 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     QPen dotPen;
+    uint8_t minThickness = 4;
+	painter.setRenderHint(QPainter::Antialiasing, true);
     painter.scale(scale, scale);
+    painter.translate(500,500);
     painter.setBackgroundMode(Qt::OpaqueMode);
     painter.setBackground(QBrush(QColor(255,255,255)));
     painter.fillRect(-2000,-2000,4000,4000,QColor(255,255,255));
@@ -62,7 +67,101 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
         painter.drawLine(-2000,x,2000,x);
     }
 
-    if(!symbol->items.empty())
+    if(haveComp)
+    {
+        for(uint16_t t = 0; t != currentComponent->items.size(); ++t)
+        {
+            if(currentComponent->items.at(t)->type == 'P')
+            {
+                t_PolylineObject *ob = static_cast<t_PolylineObject*>(currentComponent->items.at(t));
+                for(uint16_t i = 0; i != ob->points.size()-1; ++i)
+                {
+                    //std::cout << ob->points.at(i).x << "\n";
+                    //std::cout << ob->points.at(i).y << "\n";
+                    if(ob->thickness < minThickness)
+                        ob->thickness = minThickness;
+                    dotPen.setWidth(ob->thickness);
+                    dotPen.setStyle(Qt::SolidLine);
+                    dotPen.setColor(g_color);
+                    painter.setPen(dotPen);
+                    painter.drawLine(ob->points.at(i).x, ob->points.at(i).y, ob->points.at(i+1).x, ob->points.at(i+1).y);
+                }
+            }
+            else if(currentComponent->items.at(t)->type == 'C')
+            {
+                t_CircleObject *ob = static_cast<t_CircleObject*>(currentComponent->items.at(t));
+                if(ob->thickness < minThickness)
+                    ob->thickness = minThickness;
+                dotPen.setWidth(ob->thickness);
+                dotPen.setStyle(Qt::SolidLine);
+                dotPen.setColor(g_color);
+                painter.setPen(dotPen);
+                painter.drawEllipse(QPoint(ob->posx, ob->posy), ob->radius, ob->radius);
+                //std::cout << ob->posx << "-" << ob->posy << "-" << ob->radius << "\n";
+            }
+            else if(currentComponent->items.at(t)->type == 'X')
+            {
+                t_PinObject *ob = static_cast<t_PinObject*>(currentComponent->items.at(t));
+                dotPen.setWidth(minThickness);
+                dotPen.setStyle(Qt::SolidLine);
+                dotPen.setColor(g_color);
+                painter.setPen(dotPen);
+                int16_t tox, toy;
+                if(ob->direction == 'U')
+                {
+                    tox = ob->posx;
+                    toy = ob->posy - ob->length;
+                }
+                else if(ob->direction == 'D')
+                {
+                    tox = ob->posx;
+                    toy = ob->posy + ob->length;
+                }
+                else if(ob->direction == 'R')
+                {
+                    tox = ob->posx + ob->length;
+                    toy = ob->posy;
+                }
+                else if(ob->direction == 'L')
+                {
+                    tox = ob->posx - ob->length;
+                    toy = ob->posy;
+                }
+                painter.drawLine(ob->posx, ob->posy, tox, toy);
+
+                dotPen.setColor(p_color);
+                dotPen.setWidth(2);
+                painter.setPen(dotPen);
+                painter.drawEllipse(QPoint(ob->posx, ob->posy), 10, 10);
+            }
+            else if(currentComponent->items.at(t)->type == 'S')
+            {
+                std::cout << "rect\n";
+                t_RectangleObject *ob = static_cast<t_RectangleObject*>(currentComponent->items.at(t));
+                dotPen.setWidth(ob->thickness);
+                dotPen.setStyle(Qt::SolidLine);
+                dotPen.setColor(g_color);
+                painter.setPen(dotPen);
+                painter.drawRect(ob->posx, ob->posy, ob->endx, ob->endy);
+                std::cout << ob->posx << " - " << ob->posy << " - " << ob->endx << " - " << ob->endy << " s\n";
+            }
+            else if(currentComponent->items.at(t)->type == 'A')
+            {
+                std::cout << "arc\n";
+                t_ArcObject *ob = static_cast<t_ArcObject*>(currentComponent->items.at(t));
+                dotPen.setWidth(ob->thickness);
+                dotPen.setStyle(Qt::SolidLine);
+                dotPen.setColor(g_color);
+                painter.setPen(dotPen);
+//				painter.drawArc(-50,-50,100,100,0,1440);
+				painter.drawArc(ob->posx - ob->radius, ob->posy - ob->radius, ob->radius*2, ob->radius*2 , ob->start_angle, ob->end_angle);
+				std::cout << ob->start_angle << "-" << ob->end_angle << "\n";
+				std::cout << ob->posx << " - " << ob->posy << " @ " << ob->radius << "\n";
+            }
+        }
+    }
+
+/*    if(!symbol->items.empty())
     {
         for(uint8_t teller = 0;  teller != symbol->items.size(); ++teller)
         {
@@ -89,6 +188,7 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
             }
         }
     }
+*/
     if(incompleteStage)
     {
         dotPen.setWidth(5);
@@ -108,8 +208,8 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
     dotPen.setColor(QColor(100,100,100));
     dotPen.setWidth(1);
     painter.setPen(dotPen);
-    painter.drawLine(500,490,500,510);
-    painter.drawLine(490,500,510,500);
+    painter.drawLine(0,-10,0,10);
+    painter.drawLine(-10,0,10,0);
 }
 
 void t_libraryEditor::mouseMoveEvent(QMouseEvent *event)
@@ -147,7 +247,7 @@ void t_libraryEditor::mousePressEvent(QMouseEvent *event)
     }
     else if(event->button() == Qt::RightButton)
     {
-        for(std::vector<t_symbolObject*>::iterator iter = symbol->items.begin(); iter != symbol->items.end(); ++iter)
+/*        for(std::vector<t_symbolObject*>::iterator iter = symbol->items.begin(); iter != symbol->items.end(); ++iter)
         {
             if((*iter)->selected)
             {
@@ -164,6 +264,7 @@ void t_libraryEditor::mousePressEvent(QMouseEvent *event)
                 }
             }
         }
+*/
     }
     event->accept();
     repaint();
@@ -205,7 +306,7 @@ void t_libraryEditor::drawWire(QPoint pos)
     else if(incompleteStage)
     {
         incompleteLine.setP2(pos);
-        symbol->addLine(incompleteLine);
+//        symbol->addLine(incompleteLine);
         incompleteStage = false;
     }
 }
@@ -214,7 +315,7 @@ void t_libraryEditor::drawPin(QPoint pos)
 {
     pos.setX(roundNumber(pos.x()/scale));
     pos.setY(roundNumber(pos.y()/scale));
-    symbol->addPin(pos);
+//    symbol->addPin(pos);
     
     if(mode == MOVE)
         pinPlacement = false;
@@ -228,7 +329,7 @@ void t_libraryEditor::moveItem(QPoint pos)
     pos.setY(roundNumber(pos.y()/scale));
 
     std::vector<std::vector<t_symbolObject*>::iterator> closeItems;
-    for(std::vector<t_symbolObject*>::iterator iter = symbol->items.begin(); iter != symbol->items.end(); ++iter)
+/*    for(std::vector<t_symbolObject*>::iterator iter = symbol->items.begin(); iter != symbol->items.end(); ++iter)
     {
         QLine tmpLine = (*iter)->getData();
         if((*iter)->type == WIRE)
@@ -256,12 +357,12 @@ void t_libraryEditor::moveItem(QPoint pos)
             }
         }
     }
-
+*/
     if(closeItems.empty())
         return;
     else if(closeItems.size() == 1 || selPos == true)
     {
-        QLine tmLine = (*closeItems.at(selectedPos))->getData();
+/*        QLine tmLine = (*closeItems.at(selectedPos))->getData();
         if((*closeItems.at(selectedPos))->type == WIRE)
         {
             if(tmLine.p1() == pos)
@@ -285,11 +386,12 @@ void t_libraryEditor::moveItem(QPoint pos)
                 symbol->items.erase(closeItems.at(selectedPos));
             }
         }
+        */
     }
     else
     {
         selectPin = true;
-        (*closeItems.at(0))->selected = true;
+//        (*closeItems.at(0))->selected = true;
     }
 }
 
@@ -316,8 +418,11 @@ void t_libraryEditor::wheelEvent(QWheelEvent *event)
 
 void t_libraryEditor::openLib(void)
 {
+    library = new t_library;
     QString fileName = QFileDialog::getOpenFileName(this, "Open Library", "", "Kicad Library (*.lib)");
     std::cout << fileName.toStdString() << "\n";
+
+    library->load(fileName.toStdString());
 }
 
 uint16_t t_libraryEditor::roundNumber(uint16_t number)

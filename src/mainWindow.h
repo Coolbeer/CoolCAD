@@ -7,6 +7,7 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QToolBar>
 #include <QtGui/QActionGroup>
+#include <QtGui/QListWidget>
 
 #include "t_libraryeditor.h"
 
@@ -17,17 +18,22 @@ class t_mainWindow : public QMainWindow
                         t_mainWindow();
     public slots:
         void            openPartEditor(void);
+        void            openLibraryEditor(void);
+        void            itemListSelected(void);
     private:
         QAction         *pEditorAction, *openLibraryAction;
         QMdiArea        *mdiArea;
         QMdiSubWindow   *partEditorWindow;
-        t_libraryEditor   *pEditor;
+        t_libraryEditor  *pEditor;
         QToolBar        *toolBar;
         QAction         *moveAction, *lineAction, *pinAction, *infoAction;
         QActionGroup    *actionGroup;
+        QListWidget     *partListWidget;
+        QDockWidget     *dock;
         void            createMenu(void);
         void            testObject(void);
         void            createToolBar(void);
+        void            createDock(void);
     protected:
         void            keyPressEvent(QKeyEvent *event);
 };

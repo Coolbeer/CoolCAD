@@ -20,6 +20,10 @@ class t_libraryEditor : public QWidget
                                                     t_libraryEditor(void);
         uint16_t                                    roundNumber(uint16_t number);
         void                                        cancel(void);
+        t_library                                   *library;
+        t_component                                 *currentComponent;
+        bool                                        haveComp;
+        QColor                                      g_color, p_color;
     public slots:
         void                                        drawWire(QPoint pos);
         void                                        drawPin(QPoint pos);
@@ -31,7 +35,6 @@ class t_libraryEditor : public QWidget
         QLine                                       incompleteLine;
         uint8_t                                     mode;
         double                                      scale;
-        t_symbol                                    *symbol;
         t_infoWindow                                *infoWindow;
         bool                                        incompleteStage, pinPlacement, selectPin;
         double                                      hitTest(const QPoint &A, const QPoint &B, const QPoint &C);
