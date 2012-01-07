@@ -143,7 +143,7 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
                 dotPen.setColor(g_color);
                 painter.setPen(dotPen);
                 painter.drawRect(ob->posx, ob->posy, ob->endx, ob->endy);
-                std::cout << ob->posx << " - " << ob->posy << " - " << ob->endx << " - " << ob->endy << " s\n";
+//                std::cout << ob->posx << " - " << ob->posy << " - " << ob->endx << " - " << ob->endy << " s\n";
             }
             else if(currentComponent->items.at(t)->type == 'A')
             {
@@ -153,10 +153,7 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
                 dotPen.setStyle(Qt::SolidLine);
                 dotPen.setColor(g_color);
                 painter.setPen(dotPen);
-//				painter.drawArc(-50,-50,100,100,0,1440);
 				painter.drawArc(ob->posx - ob->radius, ob->posy - ob->radius, ob->radius*2, ob->radius*2 , ob->start_angle, ob->end_angle);
-				std::cout << ob->start_angle << "-" << ob->end_angle << "\n";
-				std::cout << ob->posx << " - " << ob->posy << " @ " << ob->radius << "\n";
             }
         }
     }

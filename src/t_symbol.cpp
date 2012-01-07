@@ -7,6 +7,7 @@
 
 #include "pwanstrings.h"
 
+//Ripped out of kicad sources
 #define	NORMALIZE_ANGLE_POS( Angle )\
 {									\
 	while( Angle < 0 )				\

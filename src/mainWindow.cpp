@@ -119,6 +119,7 @@ void t_mainWindow::itemListSelected(void)
         {
             pEditor->currentComponent = pEditor->library->components.at(i);
             pEditor->haveComp = true;
+			partEditorWindow->update();
         }
     }
 }
