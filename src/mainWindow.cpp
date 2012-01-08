@@ -21,7 +21,7 @@ t_mainWindow::t_mainWindow(void)
     connect(pEditorAction, SIGNAL(triggered()), this, SLOT(openPartEditor()));
     connect(openLibraryAction, SIGNAL(triggered()), this, SLOT(openLibraryEditor()));
     connect(actionGroup, SIGNAL(triggered(QAction*)), pEditor, SLOT(buttonClicked(QAction*)));
-    connect(partListWidget, SIGNAL(itemSelectionChanged()), this, SLOT(itemListSelected()));
+    connect(partListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(itemListSelected()));
 }
 
 void t_mainWindow::createMenu(void)
