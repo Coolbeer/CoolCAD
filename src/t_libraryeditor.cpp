@@ -73,6 +73,8 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
     {
         for(uint16_t t = 0; t != currentComponent->items.size(); ++t)
         {
+			if(currentComponent->items.at(t)->thickness < minThickness)
+				currentComponent->items.at(t)->thickness = minThickness;
             if(currentComponent->items.at(t)->type == 'P')
             {
                 t_PolylineObject *ob = static_cast<t_PolylineObject*>(currentComponent->items.at(t));
@@ -81,8 +83,6 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
 				{
 					poly << QPoint(ob->points.at(i).x, ob->points.at(i).y);
 				}
-				if(ob->thickness < minThickness)
-					ob->thickness = minThickness;
 				dotPen.setWidth(ob->thickness);
 				dotPen.setStyle(Qt::SolidLine);
 				dotPen.setColor(g_color);
@@ -115,8 +115,6 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
             else if(currentComponent->items.at(t)->type == 'C')
             {
                 t_CircleObject *ob = static_cast<t_CircleObject*>(currentComponent->items.at(t));
-                if(ob->thickness < minThickness)
-                    ob->thickness = minThickness;
                 dotPen.setWidth(ob->thickness);
                 dotPen.setStyle(Qt::SolidLine);
                 dotPen.setColor(g_color);
