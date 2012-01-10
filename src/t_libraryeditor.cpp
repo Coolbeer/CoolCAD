@@ -45,6 +45,10 @@ void t_libraryEditor::buttonClicked(QAction *act)
     incompleteStage = false;
 }
 
+QSize t_libraryEditor::sizeHint(void) const
+{
+    return (QSize(2000,2000));
+}
 void t_libraryEditor::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);

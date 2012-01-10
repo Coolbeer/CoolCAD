@@ -31,6 +31,7 @@ class t_libraryEditor : public QWidget
         void                                        buttonClicked(QAction *act);
         void                                        openLib(void);
     private:
+        QSize                                       sizeHint(void) const;
         void                                        drawGrid(void);
         QLine                                       incompleteLine;
         uint8_t                                     mode;

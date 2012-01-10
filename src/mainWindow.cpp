@@ -90,7 +90,9 @@ void t_mainWindow::openLibraryEditor(void)
     pEditor = new t_libraryEditor;
     connect(actionGroup, SIGNAL(triggered(QAction*)), pEditor, SLOT(buttonClicked(QAction*)));
 
-    partEditorWindow = mdiArea->addSubWindow(pEditor);
+    sArea = new QScrollArea;
+    sArea->setWidget(pEditor);
+    partEditorWindow = mdiArea->addSubWindow(sArea);
     partEditorWindow->showMaximized();
     pEditor->openLib();
     dock->show();
@@ -123,7 +125,7 @@ void t_mainWindow::itemListSelected(void)
         {
             pEditor->currentComponent = pEditor->library->components.at(i);
             pEditor->haveComp = true;
-            partEditorWindow->update();
+            pEditor->update();
         }
     }
 }

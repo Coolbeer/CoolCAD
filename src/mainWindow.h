@@ -8,6 +8,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QActionGroup>
 #include <QtGui/QListWidget>
+#include <QtGui/QScrollArea>
 
 #include "t_libraryeditor.h"
 
@@ -24,6 +25,7 @@ class t_mainWindow : public QMainWindow
         QAction         *pEditorAction, *openLibraryAction;
         QMdiArea        *mdiArea;
         QMdiSubWindow   *partEditorWindow;
+        QScrollArea     *sArea;
         t_libraryEditor  *pEditor;
         QToolBar        *toolBar;
         QAction         *moveAction, *lineAction, *pinAction, *infoAction;
