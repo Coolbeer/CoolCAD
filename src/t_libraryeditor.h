@@ -48,6 +48,7 @@ class t_libraryEditor : public QWidget
         void                                        mouseMoveEvent(QMouseEvent *event);
         void                                        mousePressEvent(QMouseEvent *event);
         void                                        wheelEvent (QWheelEvent *event); 
+
 };
 
 #endif

@@ -8,13 +8,13 @@
 #include "pwanstrings.h"
 
 //Ripped out of kicad sources
-#define	NORMALIZE_ANGLE_POS( Angle )\
-{									\
-	while( Angle < 0 )				\
-		Angle += 3600;				\
-	while(Angle >= 3600)			\
-		Angle -= 3600;				\
-}										
+#define NORMALIZE_ANGLE_POS( Angle )\
+{                                   \
+    while( Angle < 0 )              \
+        Angle += 3600;              \
+    while(Angle >= 3600)            \
+        Angle -= 3600;              \
+}                                       
 
 void t_library::load(const std::string &fileToRead)
 {
@@ -39,44 +39,44 @@ void t_library::load(const std::string &fileToRead)
         std::getline(inFile, line);
         if(line[0] == '#')
         {
-            std::cout << "Comment\n";
+//            std::cout << "Comment\n";
         }
         else if(line[0] == 'D' && line[1] == 'E' && line[2] == 'F')
         {
-            std::cout << "DEF\n";
+//            std::cout << "DEF\n";
             haveDef = true;
             tmpComp = new t_component;
             tmpComp->loadDEF(line);
         }
         else if(line[0] == 'F' && haveDef)
         {
-            std::cout << "F\n";
+//            std::cout << "F\n";
             tmpComp->loadF(line);
         }
         else if(line.substr(0,7) == "$FPLIST")
         {
-            std::cout << "fplist\n";
+//            std::cout << "fplist\n";
             while(1)
             {
                 std::getline(inFile, line);
                 if(line == "$ENDFPLIST")
                 {
-                    std::cout << "endfplist\n";
+//                    std::cout << "endfplist\n";
                     break;
                 }
                 tmpComp->addFPlist(line);
-                std::cout << line << "\n";
+//                std::cout << line << "\n";
             }
         }
         else if(line == "DRAW")
         {
-            std::cout << "DRAW\n";
+//            std::cout << "DRAW\n";
             while(1)
             {
                 std::getline(inFile, line);
                 if(line == "ENDDRAW")
                 {
-                    std::cout << "ENDDRAW\n";
+//                    std::cout << "ENDDRAW\n";
                     break;
                 }
                 tmpComp->addItem(line);
@@ -107,19 +107,19 @@ bool t_component_field::loadFields(const std::string &line)
         return false;
 
     fieldNo = boost::lexical_cast<uint16_t>(expLine.at(0).substr(1));
-    std::cout << fieldNo << "\n";
+//    std::cout << fieldNo << "\n";
 
     name = expLine.at(1);
-    std::cout << name << "\n";
+//    std::cout << name << "\n";
 
     posx = boost::lexical_cast<int16_t>(expLine.at(2));
-    std::cout << posx << "\n";
+//    std::cout << posx << "\n";
 
     posy = boost::lexical_cast<int16_t>(expLine.at(3)) * -1;
-    std::cout << posy << "\n";
+//    std::cout << posy << "\n";
 
     text_size = boost::lexical_cast<uint16_t>(expLine.at(4));
-    std::cout << text_size << "\n";
+//    std::cout << text_size << "\n";
 
     if(expLine.at(5) == "V")
         flags |= (1 << TEXT_ORIENT);
@@ -171,31 +171,31 @@ bool t_component::addItem(const std::string &line)
 {
     if(line.at(0) == 'C')
     {
-        std::cout << "circle\n";
+//        std::cout << "circle\n";
         t_CircleObject *circleObject = new t_CircleObject(line);
         items.push_back(circleObject);
     }
     else if(line.at(0) == 'P')
     {
-        std::cout << "polygon\n";
+//        std::cout << "polygon\n";
         t_PolylineObject *polylineObject = new t_PolylineObject(line);
         items.push_back(polylineObject);
     }
     else if(line.at(0) == 'X')
     {
-        std::cout << "Pin\n";
+//        std::cout << "Pin\n";
         t_PinObject *pinObject = new t_PinObject(line);
         items.push_back(pinObject);
     }
     else if(line.at(0) == 'S')
     {
-        std::cout << "Rectangle\n";
+//        std::cout << "Rectangle\n";
         t_RectangleObject *rectangleObject = new t_RectangleObject(line);
         items.push_back(rectangleObject);
     }
     else if(line.at(0) == 'A')
     {
-        std::cout << "Arc\n";
+//        std::cout << "Arc\n";
         t_ArcObject *arcObject = new t_ArcObject(line);
         items.push_back(arcObject);
     }
@@ -291,12 +291,12 @@ t_ArcObject::t_ArcObject(const std::string &data)
     posy = boost::lexical_cast<int16_t>(expLine.at(2)) * -1;
     radius = boost::lexical_cast<int16_t>(expLine.at(3));
     start_angle = boost::lexical_cast<int32_t>(expLine.at(4));
-	NORMALIZE_ANGLE_POS(start_angle);
-	start_angle = (start_angle << 4) / 10;
-	end_angle = boost::lexical_cast<int32_t>(expLine.at(5));
-	NORMALIZE_ANGLE_POS(end_angle);
-	end_angle = ((end_angle << 4) / 10) - start_angle;
-	unit = boost::lexical_cast<uint16_t>(expLine.at(6));
+    NORMALIZE_ANGLE_POS(start_angle);
+    start_angle = (start_angle << 4) / 10;
+    end_angle = boost::lexical_cast<int32_t>(expLine.at(5));
+    NORMALIZE_ANGLE_POS(end_angle);
+    end_angle = ((end_angle << 4) / 10) - start_angle;
+    unit = boost::lexical_cast<uint16_t>(expLine.at(6));
     convert = boost::lexical_cast<uint16_t>(expLine.at(7));
     thickness = boost::lexical_cast<uint16_t>(expLine.at(8));
     fill = expLine.at(9).at(0);

@@ -3,6 +3,7 @@
 #include <QtGui/QMenuBar>
 #include <QtCore/QResource>
 #include <QtGui/QDockWidget>
+#include <QtGui/QScrollArea>
 
 #include <iostream>
 
@@ -119,7 +120,7 @@ void t_mainWindow::itemListSelected(void)
         {
             pEditor->currentComponent = pEditor->library->components.at(i);
             pEditor->haveComp = true;
-			partEditorWindow->update();
+            partEditorWindow->update();
         }
     }
 }
