@@ -3,7 +3,6 @@
 #include <QtGui/QMenuBar>
 #include <QtCore/QResource>
 #include <QtGui/QDockWidget>
-#include <QtGui/QScrollArea>
 
 #include <iostream>
 
@@ -11,7 +10,6 @@ t_mainWindow::t_mainWindow(void)
 {
     mdiArea = new QMdiArea;
     setCentralWidget(mdiArea);
-    pEditor = new t_libraryEditor;
 
     createDock();
     createMenu();
@@ -21,7 +19,6 @@ t_mainWindow::t_mainWindow(void)
 
     connect(pEditorAction, SIGNAL(triggered()), this, SLOT(openPartEditor()));
     connect(openLibraryAction, SIGNAL(triggered()), this, SLOT(openLibraryEditor()));
-    connect(actionGroup, SIGNAL(triggered(QAction*)), pEditor, SLOT(buttonClicked(QAction*)));
     connect(partListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(itemListSelected()));
 }
 
@@ -81,12 +78,18 @@ void t_mainWindow::createDock(void)
 
 void t_mainWindow::openPartEditor(void)
 {
+    pEditor = new t_libraryEditor;
+    connect(actionGroup, SIGNAL(triggered(QAction*)), pEditor, SLOT(buttonClicked(QAction*)));
+
     partEditorWindow = mdiArea->addSubWindow(pEditor);
     partEditorWindow->showMaximized();
 }
 
 void t_mainWindow::openLibraryEditor(void)
 {
+    pEditor = new t_libraryEditor;
+    connect(actionGroup, SIGNAL(triggered(QAction*)), pEditor, SLOT(buttonClicked(QAction*)));
+
     partEditorWindow = mdiArea->addSubWindow(pEditor);
     partEditorWindow->showMaximized();
     pEditor->openLib();
