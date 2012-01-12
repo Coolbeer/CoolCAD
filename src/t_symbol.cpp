@@ -213,12 +213,17 @@ t_CircleObject::t_CircleObject(const std::string &line)
 
     type = 'C';
     posx = boost::lexical_cast<int16_t>(expLine.at(1));
-    posy = boost::lexical_cast<int16_t>(expLine.at(2)) * -1;
+    posy = boost::lexical_cast<int16_t>(expLine.at(2))*-1;
     radius = boost::lexical_cast<uint16_t>(expLine.at(3));
     unit = boost::lexical_cast<uint16_t>(expLine.at(4));
     convert = boost::lexical_cast<uint16_t>(expLine.at(5));
     thickness = boost::lexical_cast<uint16_t>(expLine.at(6));
     fill = expLine.at(7).at(0);
+}
+
+QRect t_CircleObject::rect(void) const
+{
+    return (QRect(posx-radius, posy-radius, radius*2, radius*2));
 }
 
 t_PolylineObject::t_PolylineObject(const std::string &data)
@@ -244,6 +249,24 @@ t_PolylineObject::t_PolylineObject(const std::string &data)
     fill = expLine.at(7+((point_count-1) *2)).at(0);
 }
 
+QRect t_PolylineObject::rect(void) const
+{
+    int16_t topX, topY, bottomX, bottomY;
+    topX = topY = bottomX = bottomY = 0;
+    for(uint16_t i = 0; i != point_count; ++i)
+    {
+        if(points.at(i).x < topX)
+            topX = points.at(i).x;
+        else if(points.at(i).x > bottomX)
+            bottomX = points.at(i).x;
+        if(points.at(i).y < topY)
+            topY = points.at(i).y;
+        else if(points.at(i).y > bottomY)
+            bottomY = points.at(i).y;
+    }
+    return (QRect(QPoint(topX, topY), QPoint(bottomX, bottomY)));
+}
+
 t_PinObject::t_PinObject(const std::string &data)
 {
     std::vector<std::string> expLine = pwan::strings::explode(data);
@@ -254,13 +277,18 @@ t_PinObject::t_PinObject(const std::string &data)
     name = expLine.at(1);
     num = expLine.at(2);
     posx = boost::lexical_cast<int16_t>(expLine.at(3));
-    posy = boost::lexical_cast<int16_t>(expLine.at(4)) * -1;
+    posy = boost::lexical_cast<int16_t>(expLine.at(4))*-1;
     length = boost::lexical_cast<uint16_t>(expLine.at(5));
     direction = expLine.at(6).at(0);
     name_text_size = boost::lexical_cast<uint16_t>(expLine.at(7));
     num_text_size = boost::lexical_cast<uint16_t>(expLine.at(8));
     electrical_type = expLine.at(9).at(0);
     pin_type = expLine.at(10).at(0);
+}
+
+QRect t_PinObject::rect(void) const
+{
+    return (QRect(QPoint(posx, posy), QPoint(posx, posy)));
 }
 
 t_RectangleObject::t_RectangleObject(const std::string &data)
@@ -271,13 +299,39 @@ t_RectangleObject::t_RectangleObject(const std::string &data)
 
     type = 'S';
     posx = boost::lexical_cast<int16_t>(expLine.at(1));
-    posy = boost::lexical_cast<int16_t>(expLine.at(2)) * -1;
-    endx = boost::lexical_cast<int16_t>(expLine.at(3)) - posx;
-    endy = (boost::lexical_cast<int16_t>(expLine.at(4)) * -1) - posy;
+    posy = boost::lexical_cast<int16_t>(expLine.at(2))*-1;
+    endx = boost::lexical_cast<int16_t>(expLine.at(3));
+    endy = (boost::lexical_cast<int16_t>(expLine.at(4))*-1);
     unit = boost::lexical_cast<uint16_t>(expLine.at(5));
     convert = boost::lexical_cast<uint16_t>(expLine.at(6));
     thickness = boost::lexical_cast<uint16_t>(expLine.at(7));
     fill = expLine.at(8).at(0);
+}
+
+QRect t_RectangleObject::rect(void) const
+{
+    int16_t topLx, topLy, botRx, botRy;
+    if(endx < posx)
+    {
+        topLx = endx;
+        botRx = posx;
+    }
+    else
+    {
+        topLx = posx;
+        botRx = endx;
+    }
+    if(endy < posy)
+    {
+        topLy = endy;
+        botRy = posx;
+    }
+    else
+    {
+        topLy = posy;
+        botRy = endy;
+    }
+    return (QRect(QPoint(topLx, topLy), QPoint(botRx, botRy)));
 }
 
 t_ArcObject::t_ArcObject(const std::string &data)
@@ -288,7 +342,7 @@ t_ArcObject::t_ArcObject(const std::string &data)
 
     type = 'A';
     posx = boost::lexical_cast<int16_t>(expLine.at(1));
-    posy = boost::lexical_cast<int16_t>(expLine.at(2)) * -1;
+    posy = boost::lexical_cast<int16_t>(expLine.at(2))*-1;
     radius = boost::lexical_cast<int16_t>(expLine.at(3));
     start_angle = boost::lexical_cast<int32_t>(expLine.at(4));
     NORMALIZE_ANGLE_POS(start_angle);
@@ -301,7 +355,12 @@ t_ArcObject::t_ArcObject(const std::string &data)
     thickness = boost::lexical_cast<uint16_t>(expLine.at(8));
     fill = expLine.at(9).at(0);
     startx = boost::lexical_cast<int16_t>(expLine.at(10));
-    starty = boost::lexical_cast<int16_t>(expLine.at(11)) * -1;
+    starty = boost::lexical_cast<int16_t>(expLine.at(11))*-1;
     endx = boost::lexical_cast<int16_t>(expLine.at(12)) - posx;
-    endy = (boost::lexical_cast<int16_t>(expLine.at(13)) * -1) - posy;
+    endy = (boost::lexical_cast<int16_t>(expLine.at(13))*-1) - posy;
+}
+
+QRect t_ArcObject::rect(void) const
+{
+    return (QRect());
 }

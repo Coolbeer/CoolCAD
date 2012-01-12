@@ -20,6 +20,7 @@ class t_libraryEditor : public QWidget
                                                     t_libraryEditor(void);
         uint16_t                                    roundNumber(uint16_t number);
         void                                        cancel(void);
+        void                                        calculateSizeHint(void);
         t_library                                   *library;
         t_component                                 *currentComponent;
         bool                                        haveComp;
@@ -33,6 +34,8 @@ class t_libraryEditor : public QWidget
     private:
         QSize                                       sizeHint(void) const;
         void                                        drawGrid(void);
+        int16_t                                    hintWidth, hintHeight;
+        int16_t                                     offsetx, offsety;
         QLine                                       incompleteLine;
         uint8_t                                     mode;
         double                                      scale;

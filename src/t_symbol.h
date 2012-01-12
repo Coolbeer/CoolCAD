@@ -5,6 +5,7 @@
 #include <string>
 #include <QtCore/QLine>
 #include <QtCore/QPoint>
+#include <QtCore/QRect>
 #include <cstdint>
 
 class t_wireObject;
@@ -77,6 +78,7 @@ class t_symbolObject
         uint16_t unit, convert, thickness;
         char fill;
         uint8_t type;
+        virtual QRect rect(void) const = 0;
 };
 
 class t_CircleObject : public t_symbolObject
@@ -84,6 +86,7 @@ class t_CircleObject : public t_symbolObject
     public:
         t_CircleObject(const std::string &data);
         uint16_t radius;
+        QRect rect(void) const;
 };
 
 class t_PolylineObject : public t_symbolObject
@@ -92,6 +95,7 @@ class t_PolylineObject : public t_symbolObject
         t_PolylineObject(const std::string &data);
         uint16_t point_count;
         std::vector<t_xyPair> points;
+        QRect rect(void) const;
 };
 
 class t_PinObject : public t_symbolObject
@@ -101,6 +105,7 @@ class t_PinObject : public t_symbolObject
         std::string name, num;
         uint16_t length, name_text_size, num_text_size;
         char direction, electrical_type, pin_type;
+        QRect rect(void) const;
 };
 
 class t_RectangleObject : public t_symbolObject
@@ -108,6 +113,7 @@ class t_RectangleObject : public t_symbolObject
     public:
         t_RectangleObject(const std::string &data);
         int16_t endx, endy;
+        QRect rect(void) const;
 };
 
 class t_ArcObject : public t_symbolObject
@@ -116,6 +122,7 @@ class t_ArcObject : public t_symbolObject
         t_ArcObject(const std::string &data);
         int16_t radius;
         int32_t start_angle, end_angle, endx, endy, startx, starty;
+        QRect rect(void) const;
 };
 
 class t_xyPair

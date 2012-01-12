@@ -96,6 +96,8 @@ void t_mainWindow::openLibraryEditor(void)
     partEditorWindow->showMaximized();
     pEditor->openLib();
     dock->show();
+    sArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    sArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     partListWidget->clear();
     for(uint16_t i = 0; i != pEditor->library->components.size(); ++i)
     {
@@ -118,6 +120,8 @@ void t_mainWindow::keyPressEvent(QKeyEvent *event)
 
 void t_mainWindow::itemListSelected(void)
 {
+    pEditor->setMinimumHeight(sArea->height());
+    pEditor->setMinimumWidth(sArea->width());
     std::string tmpStr = partListWidget->currentItem()->text().toStdString();
     for(uint16_t i = 0; i != partListWidget->count(); ++i)
     {
@@ -125,6 +129,7 @@ void t_mainWindow::itemListSelected(void)
         {
             pEditor->currentComponent = pEditor->library->components.at(i);
             pEditor->haveComp = true;
+            pEditor->calculateSizeHint();
             pEditor->update();
         }
     }

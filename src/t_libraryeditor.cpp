@@ -15,12 +15,17 @@ t_libraryEditor::t_libraryEditor(void)
 {
     setMouseTracking(true);
     mode = MOVE;
-    scale = 0.5;
+    scale = 1;
     incompleteStage = false;
     pinPlacement = false;
     haveComp = false;
     g_color = QColor(200, 100, 100);
     p_color = QColor(100, 200, 100);
+
+    offsetx = 500;
+    offsety = 500;
+    hintWidth = 4000;
+    hintHeight = 4000;
 
     connect(this, SIGNAL(drawWireSignal(QPoint)), this, SLOT(drawWire(QPoint)));
     connect(this, SIGNAL(drawPinSignal(QPoint)), this, SLOT(drawPin(QPoint)));
@@ -47,7 +52,7 @@ void t_libraryEditor::buttonClicked(QAction *act)
 
 QSize t_libraryEditor::sizeHint(void) const
 {
-    return (QSize(2000,2000));
+    return (QSize(hintWidth, hintHeight));
 }
 void t_libraryEditor::paintEvent(QPaintEvent *event)
 {
@@ -58,7 +63,7 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
     uint8_t minThickness = 4;
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.scale(scale, scale);
-    painter.translate(500,500);
+    painter.translate(offsetx,offsety);
     painter.setBackgroundMode(Qt::OpaqueMode);
     painter.setBackground(QBrush(QColor(255,255,255)));
     painter.fillRect(-2000,-2000,4000,4000,QColor(255,255,255));
@@ -173,7 +178,7 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
                 dotPen.setStyle(Qt::SolidLine);
                 dotPen.setColor(g_color);
                 painter.setPen(dotPen);
-                painter.drawRect(ob->posx, ob->posy, ob->endx, ob->endy);
+                painter.drawRect(ob->rect());
 //                std::cout << ob->posx << " - " << ob->posy << " - " << ob->endx << " - " << ob->endy << " s\n";
             }
             else if(currentComponent->items.at(t)->type == 'A')
@@ -448,7 +453,6 @@ void t_libraryEditor::openLib(void)
 {
     library = new t_library;
     QString fileName = QFileDialog::getOpenFileName(this, "Open Library", "", "Kicad Library (*.lib)");
-//    std::cout << fileName.toStdString() << "\n";
 
     library->load(fileName.toStdString());
 }
@@ -461,3 +465,37 @@ uint16_t t_libraryEditor::roundNumber(uint16_t number)
         ++returnValue;
     return returnValue *tempVal;
 }
+
+void t_libraryEditor::calculateSizeHint(void)
+{
+    int16_t newTopX, newTopY, newBottomX, newBottomY;
+    newTopX = newTopY = newBottomX = newBottomY = 0;
+    for(uint16_t t = 0; t != currentComponent->items.size(); ++t)
+    {
+        QRect hopp = currentComponent->items.at(t)->rect();
+        std::cout << currentComponent->items.at(t)->type << "\n";
+        if(!hopp.isNull())
+        {
+            std::cout << currentComponent->items.at(t)->type << "\n";
+             
+            if(hopp.left() < newTopX)
+                newTopX = hopp.left();
+            if(hopp.right() > newBottomX)
+                newBottomX = hopp.right();
+            if(hopp.top() < newTopY)
+                newTopY = hopp.top();
+            if(hopp.bottom() > newBottomY)
+                newBottomY = hopp.bottom();
+            std::cout << hopp.left() << " x " << hopp.top() << "  vs  " << hopp.right() << " x " << hopp.bottom() << "\n";
+            std::cout << newTopX << " x " << newTopY << "  vs  " << newBottomX << " x " << newBottomY << "\n";
+        }
+    }
+    hintWidth = (newBottomX - newTopX) +100;
+    hintHeight = (newBottomY - newTopY)+100;
+    offsetx = -newTopX + 50;
+    offsety = -newTopY + 50;
+    setGeometry(QRect(this->x(), this->y(), hintWidth, hintHeight));
+    std::cout << offsetx << " -- " << offsety << "\n";
+    std::cout << hintWidth << " -- " << hintHeight << "\n";
+}
+
