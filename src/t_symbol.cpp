@@ -324,7 +324,7 @@ QRect t_RectangleObject::rect(void) const
     if(endy < posy)
     {
         topLy = endy;
-        botRy = posx;
+        botRy = posy;
     }
     else
     {

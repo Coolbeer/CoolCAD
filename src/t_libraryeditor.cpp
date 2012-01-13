@@ -490,12 +490,11 @@ void t_libraryEditor::calculateSizeHint(void)
             std::cout << newTopX << " x " << newTopY << "  vs  " << newBottomX << " x " << newBottomY << "\n";
         }
     }
-    hintWidth = (newBottomX - newTopX) +100;
-    hintHeight = (newBottomY - newTopY)+100;
+    hintWidth =  (newBottomX - newTopX) +100;
+    hintHeight = (newBottomY - newTopY) +100;
     offsetx = -newTopX + 50;
     offsety = -newTopY + 50;
     setGeometry(QRect(this->x(), this->y(), hintWidth, hintHeight));
     std::cout << offsetx << " -- " << offsety << "\n";
     std::cout << hintWidth << " -- " << hintHeight << "\n";
 }
-
