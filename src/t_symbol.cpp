@@ -362,5 +362,5 @@ t_ArcObject::t_ArcObject(const std::string &data)
 
 QRect t_ArcObject::rect(void) const
 {
-    return (QRect());
+    return (QRect(QPoint(posx-radius, posy-radius), QSize(radius*2, radius*2)));
 }
