@@ -54,6 +54,7 @@ QSize t_libraryEditor::sizeHint(void) const
 {
     return (QSize(hintWidth, hintHeight));
 }
+
 void t_libraryEditor::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
@@ -106,20 +107,6 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
                     painter.setBrush(Qt::NoBrush);
                     painter.drawPolyline(poly);
                 }
-/*              int16_t firstx = ob->points.at(0).x;
-                int16_t firsty = ob->points.at(0).y;
-                for(uint16_t i = 0; i != ob->points.size()-1; ++i)
-                {
-                    if(ob->thickness < minThickness)
-                        ob->thickness = minThickness;
-                    dotPen.setWidth(ob->thickness);
-                    dotPen.setStyle(Qt::SolidLine);
-                    dotPen.setColor(g_color);
-                    painter.setPen(dotPen);
-                    painter.drawLine(ob->points.at(i).x, ob->points.at(i).y, ob->points.at(i+1).x, ob->points.at(i+1).y);
-                }
-                //painter.drawLine(ob->points.at(ob->points.size()-1).x, ob->points.at(ob->points.size()-1).y, firstx, firsty);
-*/
             }
             else if(currentComponent->items.at(t)->type == 'C')
             {
@@ -192,37 +179,17 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
                 painter.drawArc(ob->posx - ob->radius, ob->posy - ob->radius, ob->radius*2, ob->radius*2 , ob->start_angle, ob->end_angle);
             }
         }
-    }
-
-/*    if(!symbol->items.empty())
-    {
-        for(uint8_t teller = 0;  teller != symbol->items.size(); ++teller)
+        for(uint8_t t = 0; t != currentComponent->fields.size(); ++t)
         {
-            if(symbol->items.at(teller)->type == WIRE)
+            t_component_field tF = currentComponent->fields.at(t);
+            if(tF.flags & (1 << VISIBLE))
             {
-                dotPen.setWidth(5);
-                dotPen.setStyle(Qt::SolidLine);
-                if(symbol->items.at(teller)->selected)
-                    dotPen.setColor(QColor(250,0,0));
-                else
-                    dotPen.setColor(QColor(200,100,100));
-                painter.setPen(dotPen);
-                painter.drawLine(symbol->items.at(teller)->getData());
-            }
-            else if(symbol->items.at(teller)->type == PIN)
-            {
-                dotPen.setWidth(1);
-                if(symbol->items.at(teller)->selected)
-                    dotPen.setColor(QColor(10,200,10));
-                else
-                    dotPen.setColor(QColor(100,200,100));
-                painter.setPen(dotPen);
-                painter.drawEllipse(symbol->items.at(teller)->getData().p1(), 10, 10);
+                paintText(painter, tF);
             }
         }
     }
-*/
-    if(incompleteStage)
+
+/*    if(incompleteStage)
     {
         dotPen.setWidth(5);
         dotPen.setStyle(Qt::SolidLine);
@@ -237,13 +204,60 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
         painter.setPen(dotPen);
         painter.drawEllipse(incompleteLine.p2(), 10, 10);
     }
-
+    */
     dotPen.setColor(QColor(100,100,100));
     dotPen.setWidth(1);
     painter.setPen(dotPen);
     painter.drawLine(0,-10,0,10);
     painter.drawLine(-10,0,10,0);
     event->accept();
+}
+
+void t_libraryEditor::paintText(QPainter &painter, t_component_field &tF)
+{
+    int16_t newX, newY;
+    newX = tF.posx;
+    newY = tF.posy;
+
+    painter.save();
+
+    QFont tFont;
+    tFont.setPixelSize(tF.text_size);
+    painter.setFont(tFont);
+
+    QFontMetrics fm(tFont);
+    int16_t fmW, fmH;
+    fmW = fm.width(QString::fromStdString(tF.name));
+    fmH = fm.height();
+    
+    if(tF.htext_justify == 'C')
+        fmW /= 2;
+    else if(tF.htext_justify == 'L')
+        fmW = 0;
+    if(tF.vtext_justify == 'C')
+        fmH /= 2;
+
+    if(tF.flags & (1 << TEXT_ORIENT))
+    {
+        fmH = fmW;
+        fmW = 0;
+    }
+    painter.translate(newX-fmW, newY+fmH);
+
+    if(tF.flags & (1 << TEXT_ORIENT))
+        painter.rotate(270);
+
+    QPen dotPen;
+    dotPen.setWidth(4);
+    dotPen.setStyle(Qt::SolidLine);
+    dotPen.setColor(g_color);
+    painter.setPen(dotPen);
+
+
+    painter.setBackground(QBrush(QColor(0,0,0,0)));
+
+    painter.drawText(0, 0, QString::fromStdString(tF.name));
+    painter.restore();
 }
 
 void t_libraryEditor::mouseMoveEvent(QMouseEvent *event)

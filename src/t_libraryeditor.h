@@ -34,7 +34,8 @@ class t_libraryEditor : public QWidget
     private:
         QSize                                       sizeHint(void) const;
         void                                        drawGrid(void);
-        int16_t                                    hintWidth, hintHeight;
+        void                                        paintText(QPainter &painter, t_component_field &tF);
+        int16_t                                     hintWidth, hintHeight;
         int16_t                                     offsetx, offsety;
         QLine                                       incompleteLine;
         uint8_t                                     mode;

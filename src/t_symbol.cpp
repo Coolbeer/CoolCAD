@@ -102,6 +102,7 @@ bool t_library::checkVersion(const std::string &line)
 
 bool t_component_field::loadFields(const std::string &line)
 {
+    flags = 0;
     std::vector<std::string> expLine = pwan::strings::explode(line);
     if(expLine.at(0).at(0) != 'F')
         return false;
