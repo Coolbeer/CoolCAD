@@ -190,6 +190,13 @@ void t_libraryEditor::paintPin(QPainter &painter, const t_PinObject &ob)
     dotPen.setColor(g_color);
     painter.setPen(dotPen);
     painter.setBrush(Qt::NoBrush);
+
+    painter.setBackground(QBrush(QColor(0,0,0,0)));
+
+    QFont tFont;
+    tFont.setPixelSize(ob.name_text_size);
+    painter.setFont(tFont);
+
     int16_t tox, toy;
     tox = toy = 0;
     if(ob.direction == 'U')
@@ -212,6 +219,11 @@ void t_libraryEditor::paintPin(QPainter &painter, const t_PinObject &ob)
         tox = ob.posx - ob.length;
         toy = ob.posy;
     }
+/*    if(currentComponent->flags & (1 << DRAW_PINNUMBER))
+        painter.drawText(QPoint(ob.posx - 10, ob.posy - 10), QString::fromStdString(ob.num));
+    if(currentComponent->flags & (1 << DRAW_PINNAME))
+        painter.drawText(QPoint(ob.posx - 10, ob.posy + 10), QString::fromStdString(ob.name));
+*/
     painter.drawLine(ob.posx, ob.posy, tox, toy);
 
     dotPen.setColor(p_color);
@@ -239,6 +251,7 @@ void t_libraryEditor::paintArc(QPainter &painter, const t_ArcObject &ob)
     painter.setPen(dotPen);
     painter.drawArc(ob.posx - ob.radius, ob.posy - ob.radius, ob.radius*2, ob.radius*2 , ob.start_angle, ob.end_angle);
 }
+
 void t_libraryEditor::paintText(QPainter &painter, const t_component_field &tF)
 {
     int16_t newX, newY;
