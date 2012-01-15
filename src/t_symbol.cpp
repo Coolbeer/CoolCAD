@@ -1,5 +1,8 @@
 #include "t_symbol.h"
 
+#include <QtGui/QFont>
+#include <QtGui/QFontMetrics>
+
 #include <boost/lexical_cast.hpp>
 #include <fstream>
 #include <string>
@@ -133,6 +136,27 @@ bool t_component_field::loadFields(const std::string &line)
     if(expLine.at(8).at(2) == 'B')
         flags |= (1 << BOLD);
     return true;
+}
+
+QRect t_component_field::rect(void)
+{
+    QRect returnValue;
+    int16_t nposX, nposY;
+    nposX = posx;
+    nposY = posy;
+
+    QFont tFont;
+    tFont.setPixelSize(text_size);
+
+    QFontMetrics fM(tFont);
+    
+    returnValue.setWidth(fM.width(QString::fromStdString(name)));
+    returnValue.setHeight(fM.height());
+
+    if(vtext_justify == 'C')
+        nposX -= returnValue.width()/2;
+    returnValue.setTopLeft(QPoint(nposX, nposY));
+    return returnValue;
 }
 
 bool t_component::loadDEF(const std::string &line)

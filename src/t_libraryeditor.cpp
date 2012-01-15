@@ -482,33 +482,37 @@ uint16_t t_libraryEditor::roundNumber(uint16_t number)
 
 void t_libraryEditor::calculateSizeHint(void)
 {
-    int16_t newTopX, newTopY, newBottomX, newBottomY;
-    newTopX = newTopY = newBottomX = newBottomY = 0;
+    QRect currentRect;
     for(uint16_t t = 0; t != currentComponent->items.size(); ++t)
     {
         QRect hopp = currentComponent->items.at(t)->rect();
         std::cout << currentComponent->items.at(t)->type << "\n";
         if(!hopp.isNull())
-        {
-            std::cout << currentComponent->items.at(t)->type << "\n";
-             
-            if(hopp.left() < newTopX)
-                newTopX = hopp.left();
-            if(hopp.right() > newBottomX)
-                newBottomX = hopp.right();
-            if(hopp.top() < newTopY)
-                newTopY = hopp.top();
-            if(hopp.bottom() > newBottomY)
-                newBottomY = hopp.bottom();
-            std::cout << hopp.left() << " x " << hopp.top() << "  vs  " << hopp.right() << " x " << hopp.bottom() << "\n";
-            std::cout << newTopX << " x " << newTopY << "  vs  " << newBottomX << " x " << newBottomY << "\n";
-        }
+            checkSize(currentRect, hopp);
     }
-    hintWidth =  (newBottomX - newTopX) +100;
-    hintHeight = (newBottomY - newTopY) +100;
-    offsetx = -newTopX + 50;
-    offsety = -newTopY + 50;
+    for(uint16_t  t = 0; t != currentComponent->fields.size(); ++t)
+    {
+        QRect hopp = currentComponent->fields.at(t).rect();
+        if(!hopp.isNull())
+            checkSize(currentRect, hopp);
+    }
+    hintWidth =  currentRect.width() +100;
+    hintHeight = currentRect.height() +100;
+    offsetx = -currentRect.left() + 50;
+    offsety = -currentRect.top() + 50;
     setGeometry(QRect(this->x(), this->y(), hintWidth, hintHeight));
     std::cout << offsetx << " -- " << offsety << "\n";
     std::cout << hintWidth << " -- " << hintHeight << "\n";
+}
+
+void t_libraryEditor::checkSize(QRect &currentRect, QRect &newRect)
+{
+    if(newRect.left() < currentRect.left())
+        currentRect.setLeft(newRect.left());
+    if(newRect.right() > currentRect.right())
+        currentRect.setRight(newRect.right());
+    if(newRect.top() < currentRect.top())
+        currentRect.setTop(newRect.top());
+    if(newRect.bottom() > currentRect.bottom())
+        currentRect.setBottom(newRect.bottom());
 }

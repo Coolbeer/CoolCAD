@@ -69,6 +69,7 @@ class t_component_field
         uint8_t                         flags;
         char                            htext_justify, vtext_justify;
         bool                            loadFields(const std::string &line);
+        QRect                           rect(void);
 };
 
 class t_symbolObject
