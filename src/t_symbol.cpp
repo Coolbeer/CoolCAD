@@ -114,6 +114,8 @@ bool t_component_field::loadFields(const std::string &line)
 //    std::cout << fieldNo << "\n";
 
     name = expLine.at(1);
+    if(name.at(0) == '"')
+        name = name.substr(1, name.size()-2);
 //    std::cout << name << "\n";
 
     posx = boost::lexical_cast<int16_t>(expLine.at(2));
