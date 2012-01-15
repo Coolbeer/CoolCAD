@@ -34,7 +34,7 @@ class t_libraryEditor : public QWidget
     private:
         QSize                                       sizeHint(void) const;
         void                                        drawGrid(void);
-        void                                        paintText(QPainter &painter, t_component_field &tF);
+        void                                        paintText(QPainter &painter, const t_component_field &tF);
         void                                        paintPolygon(QPainter &painter, const t_PolylineObject &ob);
         void                                        paintCircle(QPainter &painter, const t_CircleObject &ob);
         void                                        paintPin(QPainter &painter, const t_PinObject &ob);

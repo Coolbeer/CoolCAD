@@ -239,7 +239,7 @@ void t_libraryEditor::paintArc(QPainter &painter, const t_ArcObject &ob)
     painter.setPen(dotPen);
     painter.drawArc(ob.posx - ob.radius, ob.posy - ob.radius, ob.radius*2, ob.radius*2 , ob.start_angle, ob.end_angle);
 }
-void t_libraryEditor::paintText(QPainter &painter, t_component_field &tF)
+void t_libraryEditor::paintText(QPainter &painter, const t_component_field &tF)
 {
     int16_t newX, newY;
     newX = tF.posx;
