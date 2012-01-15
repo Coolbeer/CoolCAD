@@ -88,25 +88,7 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
             if(currentComponent->items.at(t)->type == 'P')
             {
                 t_PolylineObject *ob = static_cast<t_PolylineObject*>(currentComponent->items.at(t));
-                QPolygon poly;
-                for(uint16_t i = 0; i != ob->points.size(); ++i)
-                {
-                    poly << QPoint(ob->points.at(i).x, ob->points.at(i).y);
-                }
-                dotPen.setWidth(ob->thickness);
-                dotPen.setStyle(Qt::SolidLine);
-                dotPen.setColor(g_color);
-                painter.setPen(dotPen);
-                if(ob->fill == 'F')
-                {
-                    painter.setBrush(QBrush(g_color,Qt::SolidPattern));
-                    painter.drawPolygon(poly,Qt::WindingFill);
-                }
-                else
-                {
-                    painter.setBrush(Qt::NoBrush);
-                    painter.drawPolyline(poly);
-                }
+                paintPolygon(painter, *ob);
             }
             else if(currentComponent->items.at(t)->type == 'C')
             {
@@ -211,6 +193,31 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
     painter.drawLine(0,-10,0,10);
     painter.drawLine(-10,0,10,0);
     event->accept();
+}
+
+void t_libraryEditor::paintPolygon(QPainter &painter, const t_PolylineObject &ob)
+{
+//    t_PolylineObject *ob = static_cast<t_PolylineObject*>(currentComponent->items.at(t));
+    QPolygon poly;
+    for(uint16_t i = 0; i != ob.points.size(); ++i)
+    {
+        poly << QPoint(ob.points.at(i).x, ob.points.at(i).y);
+    }
+    QPen dotPen;
+    dotPen.setWidth(ob.thickness);
+    dotPen.setStyle(Qt::SolidLine);
+    dotPen.setColor(g_color);
+    painter.setPen(dotPen);
+    if(ob.fill == 'F')
+    {
+        painter.setBrush(QBrush(g_color,Qt::SolidPattern));
+        painter.drawPolygon(poly,Qt::WindingFill);
+    }
+    else
+    {
+        painter.setBrush(Qt::NoBrush);
+        painter.drawPolyline(poly);
+    }
 }
 
 void t_libraryEditor::paintText(QPainter &painter, t_component_field &tF)
