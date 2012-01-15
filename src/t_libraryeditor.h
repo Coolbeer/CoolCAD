@@ -13,6 +13,8 @@
 #define PIN  4
 #define INFO 8
 
+class someTextClass;
+
 class t_libraryEditor : public QWidget
 {
     Q_OBJECT
@@ -35,6 +37,7 @@ class t_libraryEditor : public QWidget
         QSize                                       sizeHint(void) const;
         void                                        drawGrid(void);
         void                                        paintText(QPainter &painter, const t_component_field &tF);
+        void                                        drawText(QPainter &painter, const someTextClass &text);
         void                                        paintPolygon(QPainter &painter, const t_PolylineObject &ob);
         void                                        paintCircle(QPainter &painter, const t_CircleObject &ob);
         void                                        paintPin(QPainter &painter, const t_PinObject &ob);
@@ -62,4 +65,13 @@ class t_libraryEditor : public QWidget
 
 };
 
+class someTextClass
+{
+    public:
+                                                    someTextClass(void);
+        std::string                                 theText;
+        int16_t                                     posX, posY;
+        uint16_t                                    direction;
+        QFont                                       font;
+};
 #endif

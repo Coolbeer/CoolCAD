@@ -254,37 +254,66 @@ void t_libraryEditor::paintArc(QPainter &painter, const t_ArcObject &ob)
 
 void t_libraryEditor::paintText(QPainter &painter, const t_component_field &tF)
 {
-    int16_t newX, newY;
-    newX = tF.posx;
-    newY = tF.posy;
-
-    painter.save();
-
     QFont tFont;
     tFont.setPixelSize(tF.text_size);
-    painter.setFont(tFont);
 
     QFontMetrics fm(tFont);
-    int16_t fmW, fmH;
+    int16_t fmW, fmH, xmod, ymod;
     fmW = fm.width(QString::fromStdString(tF.name));
     fmH = fm.height();
-    
+
+    someTextClass tS;
+    tS.theText = tF.name;
+
     if(tF.htext_justify == 'C')
-        fmW /= 2;
+        xmod =  (fmW/2);
+    else if(tF.htext_justify == 'R')
+        xmod =  fmW;
     else if(tF.htext_justify == 'L')
-        fmW = 0;
+        xmod = tF.posx;
+
     if(tF.vtext_justify == 'C')
-        fmH /= 2;
+        ymod =  (fmH/2);
+    else if(tF.vtext_justify == 'B')
+        ymod = tF.posy;
+    else if(tF.vtext_justify == 'T')
+        ymod = fmH;
 
     if(tF.flags & (1 << TEXT_ORIENT))
     {
-        fmH = fmW;
-        fmW = 0;
+        tS.direction = 270;
+        tS.posX = tF.posx + ymod;
+        tS.posY = tF.posy + xmod;
     }
-    painter.translate(newX-fmW, newY+fmH);
+    else
+    {
+        tS.posX = tF.posx - xmod;
+        tS.posY = tF.posy + ymod;
+    }
 
-    if(tF.flags & (1 << TEXT_ORIENT))
-        painter.rotate(270);
+    tS.font = tFont;
+    std::cout << "poX = " << tF.posx << ";  poY = " << tF.posy << ";\n";
+    std::cout << "posX = " << tS.posX << ";  posY = " << tS.posY << ";\n";
+    std::cout << "fmH = " << fmH << ";  fmW = " << fmW << ";\n";
+
+
+    drawText(painter, tS);
+}
+
+void t_libraryEditor::drawText(QPainter &painter, const someTextClass &text)
+{
+    painter.save();
+
+    painter.setFont(text.font);
+
+    QFontMetrics fm(text.font);
+    int16_t fmW, fmH;
+    fmW = fm.width(QString::fromStdString(text.theText));
+    fmH = fm.height();
+
+    painter.translate(text.posX, text.posY);
+    if(text.direction)
+        painter.rotate(text.direction);
 
     QPen dotPen;
     dotPen.setWidth(4);
@@ -292,10 +321,9 @@ void t_libraryEditor::paintText(QPainter &painter, const t_component_field &tF)
     dotPen.setColor(g_color);
     painter.setPen(dotPen);
 
-
     painter.setBackground(QBrush(QColor(0,0,0,0)));
 
-    painter.drawText(0, 0, QString::fromStdString(tF.name));
+    painter.drawText(0, 0, QString::fromStdString(text.theText));
     painter.restore();
 }
 
@@ -554,4 +582,13 @@ void t_libraryEditor::checkSize(QRect &currentRect, QRect &newRect)
         currentRect.setTop(newRect.top());
     if(newRect.bottom() > currentRect.bottom())
         currentRect.setBottom(newRect.bottom());
+}
+
+someTextClass::someTextClass(void)
+{
+    this->direction = 0;
+    this->font = QFont();
+    this->posX = 0;
+    this->posY = 0;
+    this->theText = "";
 }
