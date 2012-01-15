@@ -98,60 +98,17 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
             else if(currentComponent->items.at(t)->type == 'X')
             {
                 t_PinObject *ob = static_cast<t_PinObject*>(currentComponent->items.at(t));
-                dotPen.setWidth(minThickness);
-                dotPen.setStyle(Qt::SolidLine);
-                dotPen.setColor(g_color);
-                painter.setPen(dotPen);
-                painter.setBrush(Qt::NoBrush);
-                int16_t tox, toy;
-                tox = toy = 0;
-                if(ob->direction == 'U')
-                {
-                    tox = ob->posx;
-                    toy = ob->posy - ob->length;
-                }
-                else if(ob->direction == 'D')
-                {
-                    tox = ob->posx;
-                    toy = ob->posy + ob->length;
-                }
-                else if(ob->direction == 'R')
-                {
-                    tox = ob->posx + ob->length;
-                    toy = ob->posy;
-                }
-                else if(ob->direction == 'L')
-                {
-                    tox = ob->posx - ob->length;
-                    toy = ob->posy;
-                }
-                painter.drawLine(ob->posx, ob->posy, tox, toy);
-
-                dotPen.setColor(p_color);
-                dotPen.setWidth(2);
-                painter.setPen(dotPen);
-                painter.drawEllipse(QPoint(ob->posx, ob->posy), 10, 10);
+                paintPin(painter, *ob);
             }
             else if(currentComponent->items.at(t)->type == 'S')
             {
-                //std::cout << "rect\n";
                 t_RectangleObject *ob = static_cast<t_RectangleObject*>(currentComponent->items.at(t));
-                dotPen.setWidth(ob->thickness);
-                dotPen.setStyle(Qt::SolidLine);
-                dotPen.setColor(g_color);
-                painter.setPen(dotPen);
-                painter.drawRect(ob->rect());
-//                std::cout << ob->posx << " - " << ob->posy << " - " << ob->endx << " - " << ob->endy << " s\n";
+                paintRectangle(painter, *ob);
             }
             else if(currentComponent->items.at(t)->type == 'A')
             {
-                //std::cout << "arc\n";
                 t_ArcObject *ob = static_cast<t_ArcObject*>(currentComponent->items.at(t));
-                dotPen.setWidth(ob->thickness);
-                dotPen.setStyle(Qt::SolidLine);
-                dotPen.setColor(g_color);
-                painter.setPen(dotPen);
-                painter.drawArc(ob->posx - ob->radius, ob->posy - ob->radius, ob->radius*2, ob->radius*2 , ob->start_angle, ob->end_angle);
+                paintArc(painter, *ob);
             }
         }
         for(uint8_t t = 0; t != currentComponent->fields.size(); ++t)
@@ -225,6 +182,63 @@ void t_libraryEditor::paintCircle(QPainter &painter, const t_CircleObject &ob)
     painter.drawEllipse(QPoint(ob.posx, ob.posy), ob.radius, ob.radius);
 }
 
+void t_libraryEditor::paintPin(QPainter &painter, const t_PinObject &ob)
+{
+    QPen dotPen;
+    dotPen.setWidth(4);
+    dotPen.setStyle(Qt::SolidLine);
+    dotPen.setColor(g_color);
+    painter.setPen(dotPen);
+    painter.setBrush(Qt::NoBrush);
+    int16_t tox, toy;
+    tox = toy = 0;
+    if(ob.direction == 'U')
+    {
+        tox = ob.posx;
+        toy = ob.posy - ob.length;
+    }
+    else if(ob.direction == 'D')
+    {
+        tox = ob.posx;
+        toy = ob.posy + ob.length;
+    }
+    else if(ob.direction == 'R')
+    {
+        tox = ob.posx + ob.length;
+        toy = ob.posy;
+    }
+    else if(ob.direction == 'L')
+    {
+        tox = ob.posx - ob.length;
+        toy = ob.posy;
+    }
+    painter.drawLine(ob.posx, ob.posy, tox, toy);
+
+    dotPen.setColor(p_color);
+    dotPen.setWidth(2);
+    painter.setPen(dotPen);
+    painter.drawEllipse(QPoint(ob.posx, ob.posy), 10, 10);
+}
+
+void t_libraryEditor::paintRectangle(QPainter &painter, const t_RectangleObject &ob)
+{
+    QPen dotPen;
+    dotPen.setWidth(ob.thickness);
+    dotPen.setStyle(Qt::SolidLine);
+    dotPen.setColor(g_color);
+    painter.setPen(dotPen);
+    painter.drawRect(ob.rect());
+}
+
+void t_libraryEditor::paintArc(QPainter &painter, const t_ArcObject &ob)
+{
+    QPen dotPen;
+    dotPen.setWidth(ob.thickness);
+    dotPen.setStyle(Qt::SolidLine);
+    dotPen.setColor(g_color);
+    painter.setPen(dotPen);
+    painter.drawArc(ob.posx - ob.radius, ob.posy - ob.radius, ob.radius*2, ob.radius*2 , ob.start_angle, ob.end_angle);
+}
 void t_libraryEditor::paintText(QPainter &painter, t_component_field &tF)
 {
     int16_t newX, newY;
