@@ -36,6 +36,7 @@ class t_libraryEditor : public QWidget
         void                                        drawGrid(void);
         void                                        paintText(QPainter &painter, t_component_field &tF);
         void                                        paintPolygon(QPainter &painter, const t_PolylineObject &ob);
+        void                                        paintCircle(QPainter &painter, const t_CircleObject &ob);
         void                                        checkSize(QRect &currentRect, QRect &newRect);
         int16_t                                     hintWidth, hintHeight;
         int16_t                                     offsetx, offsety;

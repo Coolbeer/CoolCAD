@@ -93,14 +93,7 @@ void t_libraryEditor::paintEvent(QPaintEvent *event)
             else if(currentComponent->items.at(t)->type == 'C')
             {
                 t_CircleObject *ob = static_cast<t_CircleObject*>(currentComponent->items.at(t));
-                dotPen.setWidth(ob->thickness);
-                dotPen.setStyle(Qt::SolidLine);
-                dotPen.setColor(g_color);
-                painter.setPen(dotPen);
-                painter.setBrush(Qt::NoBrush);
-
-                painter.drawEllipse(QPoint(ob->posx, ob->posy), ob->radius, ob->radius);
-                //std::cout << ob->posx << "-" << ob->posy << "-" << ob->radius << "\n";
+                paintCircle(painter, *ob);
             }
             else if(currentComponent->items.at(t)->type == 'X')
             {
@@ -218,6 +211,18 @@ void t_libraryEditor::paintPolygon(QPainter &painter, const t_PolylineObject &ob
         painter.setBrush(Qt::NoBrush);
         painter.drawPolyline(poly);
     }
+}
+
+void t_libraryEditor::paintCircle(QPainter &painter, const t_CircleObject &ob)
+{
+    QPen dotPen;
+    dotPen.setWidth(ob.thickness);
+    dotPen.setStyle(Qt::SolidLine);
+    dotPen.setColor(g_color);
+    painter.setPen(dotPen);
+    painter.setBrush(Qt::NoBrush);
+
+    painter.drawEllipse(QPoint(ob.posx, ob.posy), ob.radius, ob.radius);
 }
 
 void t_libraryEditor::paintText(QPainter &painter, t_component_field &tF)
