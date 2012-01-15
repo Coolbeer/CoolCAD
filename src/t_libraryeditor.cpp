@@ -260,7 +260,7 @@ void t_libraryEditor::paintText(QPainter &painter, const t_component_field &tF)
     QFontMetrics fm(tFont);
     int16_t fmW, fmH, xmod, ymod;
     fmW = fm.width(QString::fromStdString(tF.name));
-    fmH = fm.height();
+    fmH = fm.height()/2;
 
     someTextClass tS;
     tS.theText = tF.name;
@@ -270,12 +270,12 @@ void t_libraryEditor::paintText(QPainter &painter, const t_component_field &tF)
     else if(tF.htext_justify == 'R')
         xmod =  fmW;
     else if(tF.htext_justify == 'L')
-        xmod = tF.posx;
+        xmod = 0;
 
     if(tF.vtext_justify == 'C')
         ymod =  (fmH/2);
     else if(tF.vtext_justify == 'B')
-        ymod = tF.posy;
+        ymod = 0;
     else if(tF.vtext_justify == 'T')
         ymod = fmH;
 
